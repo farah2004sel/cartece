@@ -1,0 +1,143 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 80px);
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.auth-wrapper {
+  width: 100%;
+  max-width: 600px;
+  /* Slightly wider for registry */
+  animation: fadeIn 0.6s ease-out;
+}
+
+.auth-card {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border-bottom: 4px solid var(--brand);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: var(--body);
+  font-size: 0.95rem;
+}
+
+.form-input-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-input-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: var(--dark);
+  font-size: 0.9rem;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+  font-size: 1.1rem;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 10px 15px 10px 42px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.input-with-icon input:focus {
+  border-color: var(--brand);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 77, 41, 0.1);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.auth-footer p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.auth-footer a {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* CUSTOM RADIO */
+.form-check.custom-radio {
+  padding-left: 0;
+}
+
+.custom-radio .form-check-input {
+  cursor: pointer;
+  margin-right: 8px;
+  float: none;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.custom-radio .form-check-input:checked {
+  background-color: var(--brand);
+  border-color: var(--brand);
+}
+
+.custom-radio .form-check-label {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--dark);
+  font-size: 0.95rem;
+}
+
+.custom-radio .form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 77, 41, 0.1);
+  border-color: var(--brand);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
