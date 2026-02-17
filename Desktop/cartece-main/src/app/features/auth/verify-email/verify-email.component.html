@@ -1,0 +1,15 @@
+<form (ngSubmit)="onSubmit()">
+  <label>Email</label>
+  <input type="email" [(ngModel)]="email" name="email" required class="form-control"/>
+
+  <label>Code</label>
+  <input type="text" [(ngModel)]="code" name="code" required class="form-control"/>
+
+  <div *ngIf="errorMessage" style="color:red; margin-bottom:10px;">
+    {{ errorMessage }}
+  </div>
+
+  <button type="submit" [disabled]="loading">
+    {{ loading ? 'Vérification...' : 'Vérifier' }}
+  </button>
+</form>
