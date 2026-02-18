@@ -1,28 +1,33 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
  import { FormsModule, ReactiveFormsModule } from '@angular/forms';
- import { RouterModule } from '@angular/router'; 
+ import { RouterModule, Routes } from '@angular/router'; 
 
  
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
-import { ProfileComponent } from './profile/profile.component';
+import { HomeComponent } from '../../widgets/home/home.component';
 
+const routes: Routes = [
+   { path: 'login', component: LoginComponent },
+   { path: 'register', component: RegisterComponent },
+   { path: 'verify-email', component: VerifyEmailComponent },
+    { path: 'change-password', component: ChangePasswordComponent },
+]
 @NgModule({
   declarations: [
     LoginComponent,
     RegisterComponent,
     VerifyEmailComponent,
     ChangePasswordComponent,
-    ProfileComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule.forChild(routes)
    ]
 })
 export class AuthModule { }

@@ -178,9 +178,9 @@ export class NewRequestComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.authService.profileData.subscribe(data => {
-      this.profileData = data;
-    });
+    // this.authService.profileData().subscribe(data => {
+    //   this.profileData = data;
+    // });
 
     this.authService.personType.subscribe(type => {
       this.personType = type;

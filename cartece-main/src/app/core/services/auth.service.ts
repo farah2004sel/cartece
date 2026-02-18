@@ -1,25 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { ApiResponse } from '../models/response-api';
+import { environment } from 'src/environments/environment.development';
+import { CrudService } from './crud.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService extends CrudService<ApiResponse<any>, number> {
 
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = `${environment.apiUrl}/auth`;
+  constructor(private http: HttpClient) {
+    super()
+  }
 
-   private _isVerified = new BehaviorSubject<boolean>(false);
+
+
+
+  // ✅ Connexion (login / signin)
+  signin(request: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(
+      `${this.baseUrl}/login`,
+      request
+    );
+  }
+
+
+
+  private _isVerified = new BehaviorSubject<boolean>(false);
   get isVerified(): Observable<boolean> {
     return this._isVerified.asObservable();
   }
 
-   private _isFirstLogin = new BehaviorSubject<boolean>(true);
+  private _isFirstLogin = new BehaviorSubject<boolean>(true);
   get isFirstLogin(): Observable<boolean> {
     return this._isFirstLogin.asObservable();
   }
 
-   private _personType = new BehaviorSubject<'physique' | 'morale'>('physique');
+  private _personType = new BehaviorSubject<'physique' | 'morale'>('physique');
   get personType(): Observable<'physique' | 'morale'> {
     return this._personType.asObservable();
   }
@@ -27,7 +46,7 @@ export class AuthService {
     this._personType.next(type);
   }
 
-   private _profileData = new BehaviorSubject<any>(null);
+  private _profileData = new BehaviorSubject<any>(null);
   get profileData$(): Observable<any> {
     return this._profileData.asObservable();
   }
@@ -38,7 +57,7 @@ export class AuthService {
     return this._profileData.getValue();
   }
 
-  constructor(private http: HttpClient) { }
+
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, data);
@@ -54,7 +73,7 @@ export class AuthService {
       { username, password }
     );
   }
-  
+
   updatePassword(newPassword: string): Observable<any> {
     this._isFirstLogin.next(false);
     return this.http.put(`${this.baseUrl}/change-password`, { newPassword });
@@ -66,7 +85,7 @@ export class AuthService {
       data
     );
   }
-  
+
 
   setVerified(status: boolean) {
     localStorage.setItem('verified', status ? 'true' : 'false');
