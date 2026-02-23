@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './principal-layout.component.html',
   styles: [`
     .layout { display: flex; }
-    .content { flex: 1; padding: 20px; }
+    .content { flex: 1; padding: 0; }
   `]
 })
 export class LayoutPrincipalComponent { }

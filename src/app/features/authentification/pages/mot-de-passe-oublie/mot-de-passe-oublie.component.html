@@ -1,0 +1,27 @@
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="text-brand">Mot de passe oublié<span class="dot">.</span></h2>
+            <p>Entrez votre e-mail pour recevoir un code de réinitialisation</p>
+        </div>
+
+        <form class="auth-form" (ngSubmit)="onSubmit()">
+            <div class="form-input-group">
+                <label for="email">E-mail</label>
+                <div class="input-with-icon">
+                    <i class='bx bx-envelope'></i>
+                    <input type="email" id="email" placeholder="exemple@mail.com" name="email" [(ngModel)]="email"
+                        required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-brand w-100 mt-3" [disabled]="!email">
+                Envoyer le code
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Retourner à la <a routerLink="/authentification/connexion">Connexion</a></p>
+        </div>
+    </div>
+</div>

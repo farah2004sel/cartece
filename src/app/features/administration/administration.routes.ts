@@ -14,14 +14,13 @@ export const ADMINISTRATION_ROUTES: Routes = [
         path: '',
         component: TableauDeBordComponent,
         children: [
-            { path: 'accueil', component: AdministrationAccueilComponent },
+            { path: '', component: AdministrationAccueilComponent },
             { path: 'gestion-commercant', component: GestionCommercantComponent },
             { path: 'gestion-demandes', component: GestionDemandesComponent },
             { path: 'gestion-comite', component: GestionComiteComponent },
             { path: 'gestion-utilisateurs', component: GestionUtilisateursComponent },
             { path: 'gestion-roles', component: GestionRolesComponent },
-            { path: 'reference-unique', component: ReferenceUniqueComponent },
-            { path: '', redirectTo: 'accueil', pathMatch: 'full' }
+            { path: 'reference-unique', component: ReferenceUniqueComponent }
         ]
     }
 ];

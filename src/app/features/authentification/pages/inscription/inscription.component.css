@@ -130,6 +130,47 @@
   border-color: var(--brand);
 }
 
+/* PHONE INPUT GROUP */
+.phone-input-group {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.phone-input-group:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(255, 77, 41, 0.1);
+}
+
+.phone-input-group i {
+  position: static !important;
+  transform: none !important;
+  padding-left: 15px;
+  color: #adb5bd;
+}
+
+.country-select {
+  border: none;
+  background: transparent;
+  padding: 10px 5px 10px 10px;
+  font-size: 0.95rem;
+  color: var(--body);
+  cursor: pointer;
+  outline: none;
+  min-width: 90px;
+}
+
+.phone-number-input {
+  border: none !important;
+  border-left: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  flex: 1;
+  padding-left: 10px !important;
+  box-shadow: none !important;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

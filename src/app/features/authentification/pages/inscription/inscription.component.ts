@@ -15,12 +15,32 @@ import { RouterModule } from '@angular/router';
 })
 export class InscriptionComponent {
   personType: 'physique' | 'morale' = 'physique';
+  selectedCountryCode: string = '+216';
+  email: string = '';
+
+  countries = [
+    { code: '+216', name: 'Tunisie', flag: '🇹🇳' },
+    { code: '+33', name: 'France', flag: '🇫🇷' },
+    { code: '+212', name: 'Maroc', flag: '🇲🇦' },
+    { code: '+213', name: 'Algérie', flag: '🇩🇿' },
+    { code: '+218', name: 'Libye', flag: '🇱🇾' },
+    { code: '+20', name: 'Égypte', flag: '🇪🇬' },
+    { code: '+1', name: 'USA/Canada', flag: '🇺🇸' },
+    { code: '+44', name: 'UK', flag: '🇬🇧' },
+    { code: '+49', name: 'Allemagne', flag: '🇩🇪' },
+    { code: '+39', name: 'Italie', flag: '🇮🇹' },
+    { code: '+34', name: 'Espagne', flag: '🇪🇸' },
+    { code: '+966', name: 'Arabie Saoudite', flag: '🇸🇦' },
+    { code: '+971', name: 'UAE', flag: '🇦🇪' }
+  ];
 
   constructor(private authService: AuthentificationService, private router: Router) { }
 
   onSubmit(): void {
     this.authService.setPersonType(this.personType);
-    this.router.navigate(['/authentification/connexion']);
+    this.router.navigate(['/authentification/verification-email'], {
+      queryParams: { email: this.email, mode: 'register' }
+    });
   }
 
   get nameLabel(): string {

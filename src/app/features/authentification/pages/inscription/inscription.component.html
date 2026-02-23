@@ -38,16 +38,22 @@
             <label for="email">E-mail</label>
             <div class="input-with-icon">
               <i class='bx bx-envelope'></i>
-              <input type="email" id="email" placeholder="exemple@mail.com" name="email" required>
+              <input type="email" id="email" placeholder="exemple@mail.com" name="email" [(ngModel)]="email" required>
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-input-group">
             <label for="telephone">Numéro de téléphone</label>
-            <div class="input-with-icon">
+            <div class="input-with-icon d-flex align-items-center phone-input-group">
               <i class='bx bx-phone'></i>
-              <input type="tel" id="telephone" placeholder="+216 00 000 000" name="telephone" required>
+              <select class="country-select" name="countryCode" [(ngModel)]="selectedCountryCode">
+                <option *ngFor="let c of countries" [value]="c.code">
+                  {{ c.flag }} {{ c.code }}
+                </option>
+              </select>
+              <input type="tel" id="telephone" placeholder="00 000 000" name="telephone" required
+                class="phone-number-input">
             </div>
           </div>
         </div>

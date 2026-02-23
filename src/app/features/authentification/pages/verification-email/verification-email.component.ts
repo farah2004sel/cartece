@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthentificationService } from '../../services/authentification.service';
-
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { AuthentificationService } from '../../services/authentification.service';
 
 @Component({
   selector: 'app-verification-email',
@@ -18,7 +16,7 @@ import { RouterModule } from '@angular/router';
              <i class='bx bx-envelope fs-1'></i>
           </div>
           <h2 class="fw-bold">Vérification de l'e-mail</h2>
-          <p class="text-muted">Un code de vérification a été envoyé à votre adresse e-mail. Veuillez l'entrer ci-dessous.</p>
+          <p class="text-muted">Un code de vérification a été envoyé à <strong>{{ email }}</strong>. Veuillez l'entrer ci-dessous.</p>
         </div>
 
         <div class="code-inputs d-flex justify-content-between mb-4">
@@ -47,34 +45,66 @@ import { RouterModule } from '@angular/router';
   `]
 })
 export class VerificationEmailComponent implements OnInit {
-  loading = false;
 
-  constructor(private authService: AuthentificationService, private router: Router) { }
+  loading = false;
+  email = '';
+
+  constructor(
+    private authService: AuthentificationService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-    // In a real app, we would get the email from the store or navigation params
-    this.authService.sendVerificationCode('commercant@example.com').subscribe((success: boolean) => {
-      console.log('Initial code sent:', success);
-    });
+    this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
+
+    if (!this.email) {
+      this.router.navigate(['/authentification/connexion']);
+    }
   }
 
   verify(code: string): void {
-    if (code.length !== 6) return;
+    if (!code || code.length !== 6) {
+      return;
+    }
 
     this.loading = true;
-    this.authService.verifyCode(code).subscribe((success: boolean) => {
-      this.loading = false;
-      if (success) {
-        this.router.navigate(['/authentification/changement-mot-de-passe']);
-      } else {
-        alert('Code invalide. Veuillez réessayer.');
+
+    this.authService.verifyCode(code).subscribe({
+      next: (success: boolean) => {
+        this.loading = false;
+
+        if (success) {
+          const mode = this.route.snapshot.queryParamMap.get('mode');
+
+          if (mode === 'reset') {
+            this.router.navigate(['/authentification/changement-mot-de-passe']);
+          } else {
+            this.router.navigate(['/authentification/profil']);
+          }
+        } else {
+          alert('Code invalide.');
+        }
+      },
+      error: () => {
+        this.loading = false;
+        alert('Erreur serveur. Veuillez réessayer.');
       }
     });
   }
 
   resend(): void {
-    this.authService.sendVerificationCode('commercant@example.com').subscribe((success: boolean) => {
-      alert('Un nouveau code a été envoyé.');
+    if (!this.email) {
+      return;
+    }
+
+    this.authService.sendVerificationCode(this.email).subscribe({
+      next: () => {
+        alert('Un nouveau code a été envoyé.');
+      },
+      error: () => {
+        alert('Erreur lors de l’envoi du code.');
+      }
     });
   }
 }

@@ -13,7 +13,8 @@
         <div class="sidebar-menu">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/administration/accueil" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/administration" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
                         <i class='bx bxs-dashboard'></i>
                         <span>Tableau de bord</span>
                     </a>
