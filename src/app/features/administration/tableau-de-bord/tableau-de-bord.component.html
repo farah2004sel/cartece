@@ -1,0 +1,124 @@
+<div class="admin-wrapper" [class.sidebar-closed]="!isSidebarOpen">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar shadow-lg">
+        <div class="sidebar-header px-4">
+            <div class="logo-area d-flex align-items-center">
+                <div class="logo-box bg-brand text-white me-2 d-flex align-items-center justify-content-center">
+                    <i class='bx bxs-shield'></i>
+                </div>
+                <h4 class="text-white mb-0 fw-bold">Cartece<span class="text-brand">Admin</span></h4>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/accueil" routerLinkActive="active">
+                        <i class='bx bxs-dashboard'></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+
+                <li class="nav-label mt-4 px-4 mb-2 text-uppercase fw-bold small opacity-50">Gestion Principale</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/gestion-commercant" routerLinkActive="active">
+                        <i class='bx bx-group'></i>
+                        <span>Commerçants</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/gestion-comite" routerLinkActive="active">
+                        <i class='bx bx-building-house'></i>
+                        <span>Comités</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/gestion-demandes" routerLinkActive="active">
+                        <i class='bx bx-file-find'></i>
+                        <span>Demandes</span>
+                    </a>
+                </li>
+
+                <li class="nav-label mt-4 px-4 mb-2 text-uppercase fw-bold small opacity-50">Administration</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/gestion-utilisateurs" routerLinkActive="active">
+                        <i class='bx bx-user-circle'></i>
+                        <span>Utilisateurs</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/gestion-roles" routerLinkActive="active">
+                        <i class='bx bx-shield-quarter'></i>
+                        <span>Rôles & Permissions</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administration/reference-unique" routerLinkActive="active">
+                        <i class='bx bx-fingerprint'></i>
+                        <span>Référence unique</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer p-4 mt-auto">
+            <div class="user-pill d-flex align-items-center p-3 bg-dark-soft rounded-3 mb-3">
+                <div
+                    class="avatar-sm bg-brand rounded-circle text-white d-flex align-items-center justify-content-center me-2">
+                    A</div>
+                <div class="user-meta overflow-hidden">
+                    <p class="mb-0 text-white small fw-bold text-truncate">Admin Central</p>
+                    <p class="mb-0 text-muted smaller text-truncate">admin@cartece.tn</p>
+                </div>
+            </div>
+            <a routerLink="/" class="btn btn-logout w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class='bx bx-log-out'></i> <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        <!-- TOP NAVBAR -->
+        <header class="admin-header bg-white border-bottom px-4 d-flex justify-content-between align-items-center">
+            <div class="left-header d-flex align-items-center gap-3">
+                <button class="btn-toggle-sidebar" (click)="toggleSidebar()">
+                    <i class='bx bx-menu-alt-left'></i>
+                </button>
+                <div class="search-bar d-none d-md-flex">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Rechercher un dossier, un commerçant...">
+                </div>
+            </div>
+
+            <div class="right-header d-flex align-items-center gap-4">
+                <div class="notifications d-none d-sm-flex position-relative">
+                    <i class='bx bx-bell fs-4 text-muted'></i>
+                    <span class="badge-dot pulse bg-brand"></span>
+                </div>
+                <div class="v-divider"></div>
+                <div class="admin-profile d-flex align-items-center gap-2 pointer">
+                    <div class="text-end d-none d-sm-block">
+                        <h6 class="mb-0 fw-bold small">M. Administrateur</h6>
+                        <span class="text-muted smaller">Super Admin</span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=ff4d29&color=fff" class="rounded-circle"
+                        width="38" height="38" alt="avatar">
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="admin-content p-4">
+            <div class="container-fluid max-width-content">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </main>
+</div>
