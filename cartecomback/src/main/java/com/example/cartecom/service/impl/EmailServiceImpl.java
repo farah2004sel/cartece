@@ -1,19 +1,18 @@
-package com.example.cartecom.service;
+package com.example.cartecom.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.cartecom.service.IEmailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService {
+@RequiredArgsConstructor
+public class EmailServiceImpl implements IEmailService {
 
-    @Autowired
-     private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
+    @Override
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
