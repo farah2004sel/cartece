@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthentificationService } from '../../services/authentification.service';
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Utilisateur } from '../../../../core/models/utilisateur.model';
+
 
 @Component({
   selector: 'app-profil',

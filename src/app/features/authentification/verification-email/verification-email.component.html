@@ -1,0 +1,33 @@
+<div class="auth-card">
+    <div class="header">
+        <div class="icon-container">
+            <i class="fas fa-envelope-open-text"></i>
+        </div>
+        <h1>Vérification de l'e-mail</h1>
+        <p class="subtitle">Nous avons envoyé un code de confirmation à <strong>{{ email }}</strong></p>
+    </div>
+
+    <div class="otp-container">
+        <input *ngFor="let digit of otp; let i = index" type="text" maxlength="1" id="otp-{{i}}" [(ngModel)]="otp[i]"
+            (input)="onOtpChange(otp[i], i)" (keydown)="onKeyDown($event, i)" class="otp-input">
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-primary" (click)="verify()" [disabled]="otp.join('').length !== 6">
+            Vérifier le code
+        </button>
+
+        <div class="resend-container">
+            <p *ngIf="!canResend">Renvoyer le code dans <span>{{ countdown }}s</span></p>
+            <button *ngIf="canResend" class="btn-link" (click)='resendCode()'>
+                Renvoyer le code
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a routerLink="/authentification/connexion" class="back-link">
+            <i class="fas fa-arrow-left"></i> Retour à la connexion
+        </a>
+    </div>
+</div>

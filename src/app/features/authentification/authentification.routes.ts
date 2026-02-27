@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
-import { ConnexionComponent } from './pages/connexion/connexion.component';
-import { InscriptionComponent } from './pages/inscription/inscription.component';
-import { ProfilComponent } from './pages/profil/profil.component';
-import { VerificationEmailComponent } from './pages/verification-email/verification-email.component';
-import { ChangementMotDePasseComponent } from './pages/changement-mot-de-passe/changement-mot-de-passe.component';
-
-import { MotDePasseOublieComponent } from './pages/mot-de-passe-oublie/mot-de-passe-oublie.component';
+import { ConnexionComponent } from './connexion/connexion.component';
+import { InscriptionComponent } from './inscription/inscription.component';
+import { ProfilComponent } from '../profil/modifier-profil.component';
+import { VerificationEmailComponent } from './verification-email/verification-email.component';
+import { ChangementMotDePasseComponent } from './changement-mot-de-passe/changement-mot-de-passe.component';
+import { MotDePasseOublieComponent } from './mot-de-passe-oublie/mot-de-passe-oublie.component';
 
 export const AUTH_ROUTES: Routes = [
     { path: 'connexion', component: ConnexionComponent },
