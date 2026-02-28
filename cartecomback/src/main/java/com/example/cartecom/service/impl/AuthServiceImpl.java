@@ -21,7 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.example.cartecom.repository.INationaliteRepository;
+import com.example.cartecom.domain.Nationalite;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+
 public class AuthServiceImpl implements IAuthService {
 
     private static final int MAX_LOGIN_ATTEMPTS = 5;
@@ -40,8 +42,7 @@ public class AuthServiceImpl implements IAuthService {
     private final PasswordEncoder passwordEncoder;
     private final IJwtService jwtService;
     private final IEmailService emailService;
-
-    // ================= REGISTER =================
+    private final INationaliteRepository nationaliteRepository;    // ================= REGISTER =================
     @Override
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -53,22 +54,26 @@ public class AuthServiceImpl implements IAuthService {
         Roles role = roleService.getRoleByName("COMMERCANT")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rôle COMMERCANT non trouvé"));
 
+         Nationalite nationalite = nationaliteRepository
+                .findById(request.getNationaliteId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nationalité non trouvée"));
+
         Users user = userMapper.toEntity(request);
+
         user.setUserPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(role);
         user.setUserEnabled(false);
+        user.setNationalite(nationalite);
 
-         int min = 100000;
-        int max = 999999;
-        int codeNumber = (int) (Math.random() * (max - min + 1)) + min;
-        user.setUserVerificationCode(String.valueOf(codeNumber));
+        String code = String.valueOf((int)(Math.random() * 900000) + 100000);
+        user.setUserVerificationCode(code);
 
         userRepository.save(user);
 
-         emailService.sendEmail(
+        emailService.sendEmail(
                 user.getUserEmail(),
                 "Code de vérification",
-                "Votre code de vérification est : " + user.getUserVerificationCode()
+                "Votre code de vérification est : " + code
         );
 
         return new RegisterResponse(
@@ -108,7 +113,8 @@ public class AuthServiceImpl implements IAuthService {
                 userMapper.toResponse(user),
                 user.getUserEmail(),
                 user.getRole().getRoleName(),
-                user.isUserEnabled()
+                true,
+                user.isUserEnabled()       // userEnable
         );
     }
 
@@ -138,7 +144,7 @@ public class AuthServiceImpl implements IAuthService {
     public void forgotPassword(String email) {
         Users user = findUserByEmail(email);
 
-         int min = 100000;
+        int min = 100000;
         int max = 999999;
         int resetCodeNumber = (int) (Math.random() * (max - min + 1)) + min;
         user.setUserVerificationCode(String.valueOf(resetCodeNumber));
@@ -187,7 +193,7 @@ public class AuthServiceImpl implements IAuthService {
         Users user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
-        user.setUserCancel(1); // Archivé
+        user.setUserCancel(Boolean.TRUE); // Archivé
         userRepository.save(user);
 
         return userMapper.toResponse(user);

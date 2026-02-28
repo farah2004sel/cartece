@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
+  demandes = [
+    { ref: 'RT-99', type: 'Première demande', date: '10 Jan 2026', status: 'En attente' },
+    { ref: 'RT-88', type: 'Renouvellement', date: '05 Jan 2026', status: 'Validée' }
+  ];
+
 }

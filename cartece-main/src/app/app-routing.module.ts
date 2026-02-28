@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, ExtraOptions } from '@angular/router';
 import { HomeComponent } from './widgets/home/home.component';
-import { ChangePasswordComponent } from './features/auth/change-password/change-password.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
-import { LayoutComponent } from './widgets/layout/layout.component';
+ import { LayoutComponent } from './widgets/layout/layout.component';
 
 const routes: Routes = [
   {
@@ -16,15 +12,20 @@ const routes: Routes = [
         loadChildren: () =>
           import('./features/merchant/merchant.module').then(m => m.MerchantModule)
       },
+     
       {
+      path: 'profile',
+      loadChildren: () =>
+        import('./features/profile/profile.module').then(m => m.ProfileModule)
+    },
+    
+    ]
+  },
+ {
         path: 'admin',
         loadChildren: () =>
           import('./features/admin/admin.module').then(m => m.AdminModule)
       },
-    
-    ]
-  },
-
   {
     path: 'auth',
     loadChildren: () =>
@@ -36,9 +37,13 @@ const routes: Routes = [
   { path: '**', redirectTo: '/accueil' },
 
 ];
-
+const routerOptions: ExtraOptions = {
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled',
+ };
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes,routerOptions)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -41,4 +41,5 @@ public interface IUserRepository extends JpaRepository<Users, Long> {
 
     // Recherche par téléphone
     Optional<Users> findByTelephone(String telephone);
+    Optional<Users> findByUserNameIgnoreCaseOrUserEmailIgnoreCase(String userName, String userEmail);
 }

@@ -1,31 +1,31 @@
 package com.example.cartecom.dto.mapper;
 
 import com.example.cartecom.domain.Users;
+import com.example.cartecom.domain.Roles;
 import com.example.cartecom.dto.request.RegisterRequest;
 import com.example.cartecom.dto.response.UserResponse;
+import com.example.cartecom.dto.response.RolesResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring")
 public interface IUserMapper {
 
-     @Mapping(target = "userName",     source = "nom")
-    @Mapping(target = "userEmail",    source = "email")
+    @Mapping(target = "userName", source = "nom")
+    @Mapping(target = "userEmail", source = "email")
     @Mapping(target = "userPassword", source = "password")
-    @Mapping(target = "prenom",       source = "prenom")
-    @Mapping(target = "telephone",    source = "telephone")
-    @Mapping(target = "userKey",      source = "key")
-    @Mapping(target = "userVerificationCode", source = "code")
-     Users toEntity(RegisterRequest request);
+    @Mapping(target = "userVerificationCode", ignore = true)
+    @Mapping(target = "userEnabled", ignore = true)
+    @Mapping(target = "role", ignore = true) // ← IMPORTANT
+    @Mapping(target = "userFailedLoginAttempts", ignore = true)
+    @Mapping(target = "userLockUntil", ignore = true)
+    @Mapping(target = "userCancel", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    Users toEntity(RegisterRequest request);
 
-     default Users registerEmployeToEntity(RegisterRequest request) {
-        return toEntity(request);
-    }
+     UserResponse toResponse(Users user);
+    RolesResponse toRolesResponse(Roles role);
 
-     @Mapping(target = "role", source = "role")
-    UserResponse toResponse(Users user);
 
      // List<UserResponse> toResponseList(List<Users> users);
 }

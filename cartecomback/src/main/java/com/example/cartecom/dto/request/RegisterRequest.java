@@ -33,7 +33,7 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank
-    private String nationalite;
+    private Long nationaliteId;
 
     @Size(max = 20)
     private String telephone;

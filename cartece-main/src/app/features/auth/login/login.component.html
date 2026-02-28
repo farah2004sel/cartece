@@ -4,28 +4,31 @@
       <h2 class="text-brand">Connexion<span class="dot">.</span></h2>
       <p>Accédez à votre espace commerçant</p>
     </div>
-<form (ngSubmit)="login()">
+<form [formGroup]="FormLogin">
   <div class="form-input-group">
     <label>Email</label>
     <input type="text"
-           name="username"
-           [(ngModel)]="username"
-           required>
+           name="usernameOrEmail"
+           formControlName="usernameOrEmail"
+           >
   </div>
 
   <div class="form-input-group">
     <label>Mot de passe</label>
     <input type="password"
            name="password"
-           [(ngModel)]="password"
-           required>
+           formControlName="password"
+           >
   </div>
 
   <div *ngIf="errorMessage" style="color:red; margin-top:10px;">
     {{ errorMessage }}
   </div>
 
-  <button type="submit">Se connecter</button>
+  <button type="button" (click)="login()" [disabled]="loading">
+    <span *ngIf="!loading">Se connecter</span>
+    <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+  </button>
 </form>
 
     

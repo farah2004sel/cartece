@@ -1,1 +1,139 @@
-<p>new-request works!</p>
+<div class="merchant-container bg-light min-vh-100 py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate__animated animate__fadeIn">
+            <div class="card-header bg-dark-merchant text-white p-4 border-0">
+              <div class="d-flex align-items-center gap-3">
+                <div class="icon-circle bg-brand text-white">
+                  <i class='bx bx-plus-circle fs-3'></i>
+                </div>
+                <div>
+                  <h3 class="fw-bold mb-0">Nouvelle Demande de Carte</h3>
+                  <p class="mb-0 opacity-75 small text-white">Merci de remplir les détails de votre demande</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body p-5">
+              <div class="alert alert-info border-0 rounded-3 d-flex align-items-center gap-3 mb-5">
+                 <i class='bx bx-info-circle fs-4'></i>
+                 <p class="mb-0 small">Certains champs ont été pré-remplis automatiquement à partir de votre profil pour vous faire gagner du temps.</p>
+              </div>
+
+              <form (ngSubmit)="submitRequest()">
+                <!-- SECTION : INFORMATIONS PRE-REMPLIES -->
+                <div class="section-title mb-4">
+                  <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2">Informations d'Identité <small class="text-muted fw-normal">(Pré-remplies)</small></h5>
+                </div>
+
+                <div class="row g-4 mb-5">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Nom et prénom / Dénomination</label>
+                    <input type="text" class="form-control bg-light border-0 py-3" [value]="profileData?.fullName" readonly>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Nationalité</label>
+                    <input type="text" class="form-control bg-light border-0 py-3" [value]="profileData?.nationality" readonly>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted">Domicile / Siège social</label>
+                    <textarea class="form-control bg-light border-0" rows="2" [value]="profileData?.address" readonly></textarea>
+                  </div>
+
+                  <!-- SI PERSONNE MORALE -->
+                  <ng-container *ngIf="personType === 'morale'">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold text-muted">Prénom du responsable légal</label>
+                      <input type="text" class="form-control bg-light border-0 py-3" [value]="profileData?.repName" readonly>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold text-muted">Nationalité du responsable</label>
+                      <input type="text" class="form-control bg-light border-0 py-3" [value]="profileData?.repNationality" readonly>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <!-- SECTION : DETAILS DE LA DEMANDE -->
+                <div class="section-title mb-4">
+                  <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2">Détails de la demande</h5>
+                </div>
+
+                <div class="row g-4 mb-5">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Catégorie de la demande</label>
+                    <select class="form-select bg-light border-0 py-3" [(ngModel)]="requestCategory" name="reqCat" (change)="onCategoryChange(requestCategory)">
+                       <option value="physique">Personne physique</option>
+                       <option value="morale">Personne morale</option>
+                       <option value="marches">Marchés Publics</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Type de carte souhaitée</label>
+                    <select class="form-select bg-light border-0 py-3" name="cardType">
+                       <option selected disabled>Choisir un type...</option>
+                       <option>Première demande</option>
+                       <option>Renouvellement</option>
+                       <option>Modification</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted">Secteur d'activité</label>
+                    <input type="text" class="form-control bg-light border-0 py-3" placeholder="Ex: Commerce international" name="secteur">
+                  </div>
+                </div>
+
+                <!-- SECTION : DOCUMENTS A FOURNIR -->
+                <div class="section-title mb-4">
+                  <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2">Documents à fournir <small class="text-muted fw-normal">(Format PDF)</small></h5>
+                </div>
+
+                <div class="row g-3 mb-5">
+                    <div class="col-12" *ngFor="let doc of documents; let i = index">
+                        <div class="document-upload-card d-flex align-items-center justify-content-between p-3 border rounded-3"
+                             [class.border-success]="doc.file" [class.bg-light-success]="doc.file">
+                          <div class="d-flex align-items-center gap-3">
+                            <div class="doc-icon" [class.text-success]="doc.file">
+                              <i class='bx' [ngClass]="doc.file ? 'bxs-file-pdf' : 'bx-file-blank'"></i>
+                            </div>
+                            <div>
+                              <p class="mb-0 fw-bold small text-dark">{{ doc.label }}</p>
+                              <span class="badge bg-light text-muted smaller">{{ doc.category }}</span>
+                            </div>
+                          </div>
+                          <div class="upload-action">
+                            <label [for]="'file-' + i" class="btn btn-sm px-3 rounded-pill fw-bold"
+                                   [class.btn-outline-danger]="!doc.file" [class.btn-success]="doc.file">
+                              <span *ngIf="!doc.file"><i class='bx bx-upload me-1'></i> Télécharger</span>
+                              <span *ngIf="doc.file"><i class='bx bx-check me-1'></i> Modifié</span>
+                            </label>
+                            <input type="file" [id]="'file-' + i" hidden accept=".pdf" (change)="onFileSelected($event, i)">
+                          </div>
+                        </div>
+                        <p *ngIf="doc.file" class="smaller text-success mb-0 mt-1 animate__animated animate__fadeIn">
+                          <i class='bx bx-check-circle me-1'></i> {{ doc.file.name }} prêt à l'envoi
+                        </p>
+                      </div>
+                </div>
+
+                <div class="col-12 mb-4">
+                  <label class="form-label small fw-bold text-muted">Commentaires additionnels</label>
+                  <textarea class="form-control bg-light border-0" rows="3" placeholder="Précisez votre demande ici..." name="comments"></textarea>
+                </div>
+
+                <div class="d-flex gap-3 mt-5">
+                  <button type="button" class="btn btn-light px-4 py-3 fw-bold rounded-3" (click)="cancel()">
+                    Annuler
+                  </button>
+                  <button type="submit" class="btn btn-danger flex-grow-1 py-3 fw-bold rounded-3 shadow-sm" [disabled]="loading">
+                    <span *ngIf="!loading">Soumettre la demande <i class='bx bx-send ms-2'></i></span>
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

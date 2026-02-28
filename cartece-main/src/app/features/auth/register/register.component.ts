@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+interface Nationalite {
+  id: number;
+  nom: string;
+  code?: string;
+  flagUrl?: string;
+}
 
 @Component({
   selector: 'app-register',
@@ -9,67 +17,74 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class RegisterComponent implements OnInit {
 
-  personType: 'physique' | 'morale' = 'physique';  
-  commercant = {
-    fullName: '',
-    nom: '',
-    prenom: '',
-    email: '',
-    password: '',
-    nationalite: '',
-    societe: '',
-    type: 'physique'
-  };
+  RegisterForm!: FormGroup;
+  nationalites: Nationalite[] = [];
+  loading = false;
+  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-   }
 
-  onSubmit() {
-    const fullNameInput = (document.getElementById('fullName') as HTMLInputElement)?.value?.trim() || '';
-    const emailInput = (document.getElementById('email') as HTMLInputElement)?.value?.trim() || '';
-    const passwordInput = (document.getElementById('password') as HTMLInputElement)?.value?.trim() || '';
-    const nationaliteInput = (document.getElementById('nationalite') as HTMLInputElement)?.value?.trim() || '';
-  
-    if (!emailInput || !passwordInput || !nationaliteInput || !fullNameInput) {
-      alert('Veuillez remplir tous les champs obligatoires !');
-      return;
-    }
-  
-    if (this.personType === 'physique') {
-      const parts = fullNameInput.split(' ');
-      this.commercant.nom = parts[0];
-      this.commercant.prenom = parts.slice(1).join(' ') || ' ';
-      this.commercant.societe = '';
-    } else {
-      this.commercant.societe = fullNameInput;
-      this.commercant.nom = '';
-      this.commercant.prenom = '';
-    }
-  
-    this.commercant.email = emailInput;
-    this.commercant.password = passwordInput;
-    this.commercant.nationalite = nationaliteInput;
-    this.commercant.type = this.personType;
-  
-     this.authService.register(this.commercant).subscribe({
-      next: res => {
-        alert('Inscription réussie ! Code envoyé sur votre email.');
-        this.router.navigate(['/auth/verify-email']);
-      },
-      error: err => {
-        console.error(err);    
-        alert('Erreur lors de l\'inscription. Vérifiez vos champs.');
+    // 🔹 FormGroup
+    this.RegisterForm = this.fb.group({
+      nom: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      telephone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+      nationaliteId: [null, Validators.required],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(8)
+      ]]
+    });
+
+    // 🔹 Charger nationalités
+    this.authService.getAllNationalites().subscribe({
+      next: (data) => {
+        this.nationalites = data.map(n => ({
+          ...n,
+          flagUrl: n.code?.trim()
+            ? `assets/flags/${n.code.trim().toLowerCase()}.png`
+            : 'assets/flags/no-flag.png'
+        }));
       }
     });
   }
-  
-  get nameLabel(): string {
-    return this.personType === 'physique' ? 'Nom et Prénom' : 'Dénomination';
+
+  get f() {
+    return this.RegisterForm.controls;
   }
 
-  get namePlaceholder(): string {
-    return this.personType === 'physique' ? 'Votre nom et prénom' : 'Nom de votre entreprise / Dénomination';
+  onSubmit(): void {
+
+    if (this.RegisterForm.invalid) {
+      this.RegisterForm.markAllAsTouched();
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.authService.register(this.RegisterForm.value).subscribe({
+      next: () => {
+        this.loading = false;
+
+        alert('Inscription réussie ! Un code a été envoyé à votre email.');
+
+        // 🔹 Aller vers page verify
+        this.router.navigate(['/auth/verify-email']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage =
+          err?.error?.message ||
+          "Erreur lors de l'inscription. Réessayez.";
+      }
+    });
   }
 }

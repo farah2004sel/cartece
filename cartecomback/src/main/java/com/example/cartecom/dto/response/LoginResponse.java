@@ -7,7 +7,8 @@ public record LoginResponse(
         UserResponse user,
         String email,
         String role,
-        boolean verified
+        boolean verified,
+        boolean userEnable
 ) implements Serializable {
 
 }

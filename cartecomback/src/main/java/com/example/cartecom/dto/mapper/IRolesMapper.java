@@ -47,7 +47,7 @@ public interface IRolesMapper {
                                 .map(action -> new ActionsResponse(
                                         action.getActionId(),
                                         action.getActionTitle(),
-                                        null // description peut rester null si non défini
+                                        null
                                 ))
                                 .collect(Collectors.toList());
                     } catch (Exception e) {

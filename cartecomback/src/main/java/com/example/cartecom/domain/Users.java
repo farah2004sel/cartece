@@ -45,10 +45,12 @@ public class Users implements UserDetails {
     private LocalDateTime userLockUntil;
 
     @Column(name = "user_cancel")
-    private int userCancel = 0;
+    private Boolean userCancel = false;
 
     @Column(name = "user_key")
     private String userKey;
+    @Column(name = "sort_order")
+    private Integer sortOrder = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -66,8 +68,9 @@ public class Users implements UserDetails {
     @Column(name = "user_telephone")
     private String telephone;
 
-    @Column(name = "user_nationalite")
-    private String nationalite;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_nationalite_id")
+    private Nationalite nationalite;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

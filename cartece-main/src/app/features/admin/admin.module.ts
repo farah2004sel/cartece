@@ -7,8 +7,7 @@ const routes: Routes = [
         path: '',
         component: DashboardComponent,
         children: [
-            // Add sub-routes here later (e.g., commercants, users, etc.)
-        ]
+         ]
     }
 ];
 @NgModule({

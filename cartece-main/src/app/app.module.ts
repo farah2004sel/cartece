@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
- import { AppRoutingModule } from './app-routing.module';
- import { AuthModule } from './features/auth/auth.module';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from './features/auth/auth.module';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './widgets/navbar/navbar.component';
 import { FooterComponent } from './widgets/footer/footer.component';
 import { HomeComponent } from './widgets/home/home.component';
-import { HttpClientModule } from '@angular/common/http';
- import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutComponent } from './widgets/layout/layout.component';
+
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -17,8 +20,7 @@ import { LayoutComponent } from './widgets/layout/layout.component';
     NavbarComponent,
     FooterComponent,
     HomeComponent,
-    LayoutComponent,
-
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -26,9 +28,9 @@ import { LayoutComponent } from './widgets/layout/layout.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    AuthModule
-
-   ],
+    AuthModule,
+    BrowserAnimationsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

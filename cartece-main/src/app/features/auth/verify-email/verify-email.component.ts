@@ -14,21 +14,12 @@ export class VerifyEmailComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-     const emailStored = localStorage.getItem('email');
+    const emailStored = localStorage.getItem('email');
     if (emailStored) this.email = emailStored;
   }
-
-   verify() {
-    console.log('Email:', this.email);
-    console.log('Code:', this.code);
-    this.router.navigate(['/login']);
-
-  }
-
-   
   onSubmit() {
     if (!this.email || !this.code) {
       this.errorMessage = 'Email ou code manquant';
@@ -38,21 +29,23 @@ export class VerifyEmailComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    this.authService.verifyEmail(this.email, this.code).subscribe({
+    const codeToSend = this.code.toString().trim();
+    const emailToSend = this.email.trim();
+
+    this.authService.verifyEmail(emailToSend, codeToSend).subscribe({
       next: (res: any) => {
         this.loading = false;
         if (res.success) {
-          this.router.navigate(['/auth/login']); 
+          alert(res.message);
+          this.router.navigate(['/accueil/profile']);
         } else {
           this.errorMessage = res.message || 'Code invalide';
         }
       },
       error: (err: any) => {
         this.loading = false;
-        this.errorMessage = 'Erreur serveur';
+        this.errorMessage = err.error?.message || 'Erreur serveur';
       }
     });
   }
-  
-  
 }
