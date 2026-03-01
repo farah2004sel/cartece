@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -9,30 +10,36 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class VerifyEmailComponent implements OnInit {
 
-  email: string = '';
-  code: string = '';
+  formEmail!: FormGroup;  // formulaire reactive
   loading = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    const emailStored = localStorage.getItem('email');
-    if (emailStored) this.email = emailStored;
+    this.formEmail = this.fb.group({
+      email: [localStorage.getItem('email') || '', [Validators.required, Validators.email]],
+      code: ['', Validators.required]
+    });
   }
+
   onSubmit() {
-    if (!this.email || !this.code) {
-      this.errorMessage = 'Email ou code manquant';
+    if (this.formEmail.invalid) {
+      this.errorMessage = 'Email ou code manquant ou invalide';
       return;
     }
 
     this.loading = true;
     this.errorMessage = '';
 
-    const codeToSend = this.code.toString().trim();
-    const emailToSend = this.email.trim();
+    const email = this.formEmail.value.email.trim();
+    const code = this.formEmail.value.code.trim();
 
-    this.authService.verifyEmail(emailToSend, codeToSend).subscribe({
+    this.authService.verifyEmail(email, code).subscribe({
       next: (res: any) => {
         this.loading = false;
         if (res.success) {

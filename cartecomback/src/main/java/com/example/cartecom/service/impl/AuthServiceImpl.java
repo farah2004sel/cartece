@@ -47,42 +47,41 @@ public class AuthServiceImpl implements IAuthService {
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
 
-        if (userRepository.existsByUserEmail(request.getEmail())) {
+         if (userRepository.existsByUserEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cet email est déjà utilisé");
         }
 
-        Roles role = roleService.getRoleByName("COMMERCANT")
+         Roles role = roleService.getRoleByName("COMMERCANT")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rôle COMMERCANT non trouvé"));
 
          Nationalite nationalite = nationaliteRepository
                 .findById(request.getNationaliteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nationalité non trouvée"));
 
-        Users user = userMapper.toEntity(request);
+         Users user = userMapper.toEntity(request);
 
-        user.setUserPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(role);
-        user.setUserEnabled(false);
+         user.setUserPassword(passwordEncoder.encode(request.getPassword()));
+
+         user.setRole(role);
         user.setNationalite(nationalite);
 
-        String code = String.valueOf((int)(Math.random() * 900000) + 100000);
+         String code = String.valueOf((int)(Math.random() * 900000) + 100000);
         user.setUserVerificationCode(code);
 
-        userRepository.save(user);
+         userRepository.saveAndFlush(user);
 
-        emailService.sendEmail(
+         emailService.sendEmail(
                 user.getUserEmail(),
                 "Code de vérification",
                 "Votre code de vérification est : " + code
         );
 
-        return new RegisterResponse(
+         return new RegisterResponse(
                 "Inscription réussie. Vérifiez votre email.",
                 user.getUserEmail(),
                 false
         );
     }
-
     // ================= LOGIN =================
     @Override
     public LoginResponse login(LoginRequest request) {

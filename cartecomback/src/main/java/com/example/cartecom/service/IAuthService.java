@@ -58,4 +58,4 @@ public interface IAuthService {
      * @param newPassword nouveau mot de passe
      */
     void resetPassword(String email, String code, String newPassword);
-}
+ }

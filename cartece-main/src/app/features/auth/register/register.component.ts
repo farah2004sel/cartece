@@ -30,20 +30,23 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // 🔹 FormGroup
     this.RegisterForm = this.fb.group({
+      type: ['physique', Validators.required],
       nom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      telephone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
+      telephone: ['', [
+        Validators.required,
+        Validators.pattern('^[0-9]{8}$')
+      ]],
       nationaliteId: [null, Validators.required],
       password: ['', [
         Validators.required,
         Validators.minLength(8),
-        Validators.maxLength(8)
+        Validators.maxLength(100) // ← تعديل maxLength
       ]]
     });
 
-    // 🔹 Charger nationalités
+    // Charger les nationalités
     this.authService.getAllNationalites().subscribe({
       next: (data) => {
         this.nationalites = data.map(n => ({
@@ -67,20 +70,40 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
+    const formValue = this.RegisterForm.value;
+
+     let payload: any = {
+      email: formValue.email,
+      password: formValue.password,
+      nationaliteId: Number(formValue.nationaliteId), // تأكد رقم
+      telephone: formValue.telephone,
+      type: formValue.type,
+     
+    };
+
+    if (formValue.type === 'physique') {
+      const parts = formValue.nom.trim().split(' ');
+      payload.nom = parts[0];
+      payload.prenom = parts.slice(1).join(' ') || '';
+      payload.societe = '';
+    } else {
+      payload.societe = formValue.nom;
+      payload.nom = '';
+      payload.prenom = '';
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
-    this.authService.register(this.RegisterForm.value).subscribe({
+    this.authService.register(payload).subscribe({
       next: () => {
         this.loading = false;
-
         alert('Inscription réussie ! Un code a été envoyé à votre email.');
-
-        // 🔹 Aller vers page verify
         this.router.navigate(['/auth/verify-email']);
       },
       error: (err) => {
         this.loading = false;
+        console.error(err); // أفضل للطباعة
         this.errorMessage =
           err?.error?.message ||
           "Erreur lors de l'inscription. Réessayez.";

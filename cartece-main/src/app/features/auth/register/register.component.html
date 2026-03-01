@@ -2,104 +2,191 @@
   <div class="auth-card">
 
     <div class="auth-header">
-      <h2 class="text-brand">Inscription<span class="dot">.</span></h2>
+      <h2 class="text-brand">
+        Inscription<span class="dot">.</span>
+      </h2>
       <p>Créez votre compte commerçant étranger</p>
     </div>
 
-    <form [formGroup]="RegisterForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <form [formGroup]="RegisterForm"
+          (ngSubmit)="onSubmit()"
+          class="auth-form">
 
-      <!-- Nom -->
-      <div class="form-input-group">
-        <label>Nom</label>
-        <div class="input-with-icon">
-          <i class='bx bx-user'></i>
-          <input type="text" formControlName="nom" class="form-control">
+      <!-- ================= TYPE PERSONNE ================= -->
+      <div class="form-input-group mb-4">
+        <label class="d-block mb-3">Type de personne</label>
+
+        <div class="d-flex gap-4">
+          <div class="form-check custom-radio">
+            <input class="form-check-input"
+                   type="radio"
+                   formControlName="type"
+                   value="physique"
+                   id="physique">
+            <label class="form-check-label" for="physique">
+              Personne physique
+            </label>
+          </div>
+
+          <div class="form-check custom-radio">
+            <input class="form-check-input"
+                   type="radio"
+                   formControlName="type"
+                   value="morale"
+                   id="morale">
+            <label class="form-check-label" for="morale">
+              Personne morale
+            </label>
+          </div>
         </div>
-        <small class="text-danger" *ngIf="f['nom'].touched && f['nom'].errors?.['required']">
-          Le nom est obligatoire.
+      </div>
+
+      <!-- ================= NOM / DENOMINATION ================= -->
+      <div class="form-input-group">
+        <label>
+          {{ RegisterForm.get('type')?.value === 'physique'
+              ? 'Nom et Prénom'
+              : 'Dénomination' }}
+        </label>
+
+        <div class="input-with-icon">
+          <i class='bx'
+             [ngClass]="RegisterForm.get('type')?.value === 'physique'
+                        ? 'bx-user'
+                        : 'bx-buildings'"></i>
+
+          <input type="text"
+                 formControlName="nom"
+                 class="form-control">
+        </div>
+
+        <small class="text-danger"
+               *ngIf="f['nom'].touched && f['nom'].errors?.['required']">
+          Ce champ est obligatoire.
         </small>
       </div>
 
-      <!-- Email -->
+      <!-- ================= EMAIL ================= -->
       <div class="form-input-group">
         <label>Email</label>
+
         <div class="input-with-icon">
           <i class='bx bx-envelope'></i>
-          <input type="email" formControlName="email" class="form-control">
+          <input type="email"
+                 formControlName="email"
+                 class="form-control">
         </div>
-        <small class="text-danger" *ngIf="f['email'].touched && f['email'].errors?.['required']">
+
+        <small class="text-danger"
+               *ngIf="f['email'].touched && f['email'].errors?.['required']">
           L’email est obligatoire.
         </small>
-        <small class="text-danger" *ngIf="f['email'].errors?.['email']">
+
+        <small class="text-danger"
+               *ngIf="f['email'].errors?.['email']">
           Format email invalide.
         </small>
       </div>
 
-      <!-- Téléphone -->
+      <!-- ================= TELEPHONE ================= -->
       <div class="form-input-group">
         <label>Numéro de téléphone</label>
+
         <div class="input-with-icon">
           <i class='bx bx-phone'></i>
-          <input type="text" formControlName="telephone" class="form-control">
+          <input type="text"
+                 formControlName="telephone"
+                 class="form-control">
         </div>
-        <small class="text-danger" *ngIf="f['telephone'].touched && f['telephone'].errors?.['required']">
+
+        <small class="text-danger"
+               *ngIf="f['telephone'].touched && f['telephone'].errors?.['required']">
           Le numéro est obligatoire.
         </small>
-        <small class="text-danger" *ngIf="f['telephone'].errors?.['pattern']">
+
+        <small class="text-danger"
+               *ngIf="f['telephone'].errors?.['pattern']">
           Le numéro doit contenir exactement 8 chiffres.
         </small>
       </div>
 
-      <!-- Nationalité -->
+      <!-- ================= NATIONALITE ================= -->
       <div class="form-input-group">
         <label>Nationalité</label>
+
         <mat-form-field appearance="fill" class="w-100">
           <mat-select formControlName="nationaliteId">
-            <mat-option [value]="null">-- Sélectionner --</mat-option>
-            <mat-option *ngFor="let n of nationalites" [value]="n.id">
+
+            <mat-option [value]="null">
+              -- Sélectionner --
+            </mat-option>
+
+            <mat-option *ngFor="let n of nationalites"
+                        [value]="n.id">
+
               <span style="display:flex; align-items:center; gap:10px;">
-                <img [src]="n.flagUrl" width="26" height="18">
+                <img [src]="n.flagUrl"
+                     width="26"
+                     height="18">
                 {{ n.nom }}
               </span>
+
             </mat-option>
+
           </mat-select>
         </mat-form-field>
-        <small class="text-danger" *ngIf="f['nationaliteId'].touched && f['nationaliteId'].errors?.['required']">
+
+        <small class="text-danger"
+               *ngIf="f['nationaliteId'].touched && f['nationaliteId'].errors?.['required']">
           Veuillez choisir une nationalité.
         </small>
       </div>
 
-      <!-- Password -->
+      <!-- ================= PASSWORD ================= -->
       <div class="form-input-group">
         <label>Mot de passe</label>
+
         <div class="input-with-icon">
           <i class='bx bx-lock-alt'></i>
-          <input type="password" formControlName="password" class="form-control">
+          <input type="password"
+                 formControlName="password"
+                 class="form-control">
         </div>
-        <small class="text-danger" *ngIf="f['password'].touched && f['password'].errors?.['required']">
+
+        <small class="text-danger"
+               *ngIf="f['password'].touched && f['password'].errors?.['required']">
           Mot de passe obligatoire.
         </small>
-        <small class="text-danger" *ngIf="f['password'].errors?.['minlength']">
+
+        <small class="text-danger"
+               *ngIf="f['password'].errors?.['minlength']">
           8 caractères obligatoires.
         </small>
       </div>
 
-      <!-- Backend Error -->
-      <div *ngIf="errorMessage" class="text-danger mt-2">
+      <!-- BACKEND ERROR -->
+      <div *ngIf="errorMessage"
+           class="text-danger mt-2">
         {{ errorMessage }}
       </div>
 
+      <!-- BUTTON -->
       <button type="submit"
               class="btn btn-brand w-100 mt-3 p-3 fw-bold"
               [disabled]="loading || RegisterForm.invalid">
+
         <span *ngIf="!loading">Créer le compte</span>
-        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+        <span *ngIf="loading"
+              class="spinner-border spinner-border-sm"></span>
+
       </button>
 
     </form>
 
     <div class="auth-footer">
-      <p>Déjà inscrit ? <a routerLink="/auth/login">Se connecter</a></p>
+      <p>Déjà inscrit ?
+        <a routerLink="/auth/login">Se connecter</a>
+      </p>
     </div>
 
   </div>

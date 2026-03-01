@@ -35,7 +35,7 @@ public class Users implements UserDetails {
     @Column(name = "user_enabled")
     private boolean userEnabled = false;
 
-    @Column(name = "user_verification_code")
+    @Column(name = "user_verification_code", nullable = true)
     private String userVerificationCode;
 
     @Column(name = "user_failed_login_attempts")
