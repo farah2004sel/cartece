@@ -1,0 +1,159 @@
+:host {
+    --merchant-bg: #f8fafc;
+    --dark-merchant: #1e1e2d;
+    --brand: #ff4d29;
+    --brand-dark: #cc3d21;
+    --card-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* ========================= */
+/* NAVBAR */
+.bg-dark-merchant {
+    background-color: var(--dark-merchant);
+}
+
+.logo-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+/* زر الخروج */
+.btn-logout-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-logout-circle:hover {
+    background: var(--brand);
+    transform: scale(1.1);
+}
+
+/* ========================= */
+/* CARDS */
+.hover-lift {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 1.5rem 3rem var(--card-shadow) !important;
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.icon-box:hover {
+    transform: rotate(10deg) scale(1.1);
+}
+
+/* ========================= */
+/* ألوان البطاقات */
+.bg-light-primary {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #4338ca;
+}
+
+.bg-light-success {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #15803d;
+}
+
+.bg-light-danger {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #b91c1c;
+}
+
+.smaller {
+    font-size: 0.75rem;
+}
+
+.bg-soft-warning {
+    background: rgba(245, 158, 11, 0.15);
+}
+
+/* ========================= */
+/* أزرار صغيرة */
+.btn-icon-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon-sm:hover {
+    background: #e2e8f0;
+    color: var(--brand);
+}
+
+/* ========================= */
+/* أزرار Faire une demande و Voir mes demandes */
+.btn-action-group {
+    display: flex;
+    flex-direction: column; /* عمودي على الموبايل */
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .btn-action-group {
+        flex-direction: row; /* أفقي على اللابتوب/PC */
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+}
+
+.btn-action-group .btn {
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* مسافة بين الأيقونة والنص */
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    font-weight: 600;
+    border: none;
+}
+
+/* تأثير gradient عند hover */
+.btn-action-group .btn.btn-danger:hover {
+    background: linear-gradient(135deg, #ff7043, #ff5722);
+    box-shadow: 0 0.8rem 1.5rem rgba(255, 77, 41, 0.3);
+    transform: translateY(-3px);
+    color: #fff;
+}
+
+.btn-action-group .btn.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #4dabf7, #1e88e5);
+    color: #fff;
+    box-shadow: 0 0.8rem 1.5rem rgba(30, 136, 229, 0.3);
+    transform: translateY(-3px);
+}
+
+/* ================================== */
+/* تحسين spacing بين الأزرار */
+.btn-action-group .btn i {
+    font-size: 1.2rem;
+}

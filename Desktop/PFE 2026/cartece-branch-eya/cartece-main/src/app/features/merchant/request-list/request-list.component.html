@@ -1,0 +1,45 @@
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Mes Demandes</h2>
+  
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <tr *ngFor="let req of requests">
+            <td>{{ req.reference }}</td>
+            <td>{{ req.type }}</td>
+            <td>{{ req.date }}</td>
+  
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-warning': req.status === 'En attente',
+                  'bg-primary': req.status === 'Traitement',
+                  'bg-success': req.status === 'Validé',
+                  'bg-danger': req.status === 'Refusé'
+                }"
+              >
+                {{ req.status }}
+              </span>
+            </td>
+  
+            <td>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="bx bx-edit-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
