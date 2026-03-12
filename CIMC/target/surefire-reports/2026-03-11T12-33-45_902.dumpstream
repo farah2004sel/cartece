@@ -1,0 +1,6 @@
+# Created at 2026-03-11T12:33:47.040
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=IBM850
+
+# Created at 2026-03-11T12:33:54.455
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+

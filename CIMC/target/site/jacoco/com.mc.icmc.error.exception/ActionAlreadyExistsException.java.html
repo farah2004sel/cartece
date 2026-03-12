@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActionAlreadyExistsException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.error.exception</a> &gt; <span class="el_source">ActionAlreadyExistsException.java</span></div><h1>ActionAlreadyExistsException.java</h1><pre class="source lang-java linenums">package com.mc.icmc.error.exception;
+
+import com.mc.icmc.error.record.ExceptionWithErrorResponse;
+import lombok.Getter;
+import lombok.ToString;
+import org.springframework.http.HttpStatus;
+
+import java.io.Serial;
+
+/**
+ * Exception thrown when trying to create a Role that already exists.
+ * @author Ghazi Ben Yahya
+ */
+@Getter
+@ToString
+public class ActionAlreadyExistsException extends RuntimeException implements ExceptionWithErrorResponse {
+
+    private static final String DEFAULT_MESSAGE = &quot;Action already exists&quot;;
+    private static final String DEFAULT_CODE = &quot;Action_already_exists&quot;;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private final String message;
+    private final String code;
+    private final HttpStatus httpStatus;
+    private final int status;
+    private final String url;
+
+<span class="nc" id="L30">    public ActionAlreadyExistsException() {</span>
+<span class="nc" id="L31">        this.message = DEFAULT_MESSAGE;</span>
+<span class="nc" id="L32">        this.code = DEFAULT_CODE;</span>
+<span class="nc" id="L33">        this.httpStatus = HttpStatus.CONFLICT; // 409 Conflict</span>
+<span class="nc" id="L34">        this.status = httpStatus.value();</span>
+<span class="nc" id="L35">        this.url = &quot;&quot;;</span>
+<span class="nc" id="L36">    }</span>
+
+<span class="nc" id="L38">    public ActionAlreadyExistsException(String message) {</span>
+<span class="nc" id="L39">        this.message = message;</span>
+<span class="nc" id="L40">        this.code = DEFAULT_CODE;</span>
+<span class="nc" id="L41">        this.httpStatus = HttpStatus.CONFLICT;</span>
+<span class="nc" id="L42">        this.status = httpStatus.value();</span>
+<span class="nc" id="L43">        this.url = &quot;&quot;;</span>
+<span class="nc" id="L44">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

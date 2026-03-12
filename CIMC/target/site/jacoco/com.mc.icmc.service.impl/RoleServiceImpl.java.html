@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RoleServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.service.impl</a> &gt; <span class="el_source">RoleServiceImpl.java</span></div><h1>RoleServiceImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.service.impl;
+
+import com.mc.icmc.domain.*;
+import com.mc.icmc.dto.mapper.IRolesMapper;
+import com.mc.icmc.dto.mapper.IUserMapper;
+import com.mc.icmc.dto.request.ModuleWithActionIdsRequest;
+import com.mc.icmc.dto.request.RolesRequest;
+import com.mc.icmc.dto.response.LoginResponse;
+import com.mc.icmc.dto.response.RolesResponse;
+import com.mc.icmc.dto.response.UserResponse;
+import com.mc.icmc.error.exception.RoleAlreadyExistsException;
+import com.mc.icmc.error.exception.RoleNotFoundException;
+import com.mc.icmc.repository.*;
+import com.mc.icmc.service.IRoleService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+<span class="fc" id="L27">@Slf4j</span>
+public class RoleServiceImpl implements IRoleService {
+
+    private final IRoleRepository roleRepository;
+    private final IRolesMapper roleMapper;
+    private final IModulesRepository modulesRepository;
+    private final IActionsRepository actionsRepository;
+    private final IRoleModuleActionRepository roleModuleActionRepository;
+    private final IUserRepository userRepository;
+    private final IUserMapper userMapper;
+
+
+
+
+    @Override
+    public RolesResponse createRole(RolesRequest request) {
+
+        // Mapper le rôle (nom et description)
+<span class="nc" id="L45">        Roles role = roleMapper.toEntity(request);</span>
+
+        // Lier les modules et les actions existantes via RoleModuleAction
+<span class="nc bnc" id="L48" title="All 4 branches missed.">        if (request.getModules() != null &amp;&amp; !request.getModules().isEmpty()) {</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            for (ModuleWithActionIdsRequest moduleRequest : request.getModules()) {</span>
+<span class="nc" id="L50">                Modules module = modulesRepository.findById(moduleRequest.getModuleId())</span>
+<span class="nc" id="L51">                        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Module non trouvé : &quot; + moduleRequest.getModuleId()));</span>
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                for (Long actionId : moduleRequest.getActionIds()) {</span>
+<span class="nc" id="L54">                    Actions action = actionsRepository.findById(actionId)</span>
+<span class="nc" id="L55">                            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Action non trouvée : &quot; + actionId));</span>
+
+<span class="nc" id="L57">                    RoleModuleAction rma = new RoleModuleAction();</span>
+<span class="nc" id="L58">                    rma.setRole(role);</span>
+<span class="nc" id="L59">                    rma.setModule(module);</span>
+<span class="nc" id="L60">                    rma.setAction(action);</span>
+
+                    // Ajouter la liaison au rôle
+<span class="nc" id="L63">                    role.getRoleModuleActions().add(rma);</span>
+<span class="nc" id="L64">                }</span>
+<span class="nc" id="L65">            }</span>
+        }
+
+
+        // Récupérer le max actuel du sort order et l'incrémenter
+<span class="nc" id="L70">        int maxSortOrder = roleRepository.findMaxRoleSortOrder();</span>
+<span class="nc" id="L71">        role.setRoleSortOrder(maxSortOrder + 1);</span>
+<span class="nc" id="L72">        role.setRoleCancel(0);</span>
+<span class="nc" id="L73">        role.setRolePublished(1);</span>
+<span class="nc" id="L74">        role.setRoleDateAdded(LocalDate.now());</span>
+<span class="nc" id="L75">        Roles savedRole = roleRepository.save(role);</span>
+<span class="nc" id="L76">        return roleMapper.toResponse(savedRole);</span>
+    }
+
+
+
+
+    /*****************/
+    @Override
+    @Transactional
+    public LoginResponse updateRoleById(Long id, Long user_id , RolesRequest request) {
+
+        // Récupérer l'utilisateur par username ou email
+<span class="nc" id="L88">        Users users = userRepository.findById(user_id)</span>
+<span class="nc" id="L89">                .orElseThrow(() -&gt; new RuntimeException(&quot;User not found&quot;));</span>
+
+
+        //  Récupérer le rôle existant
+<span class="nc" id="L93">        Roles role = roleRepository.findByRoleId(id)</span>
+<span class="nc" id="L94">                .orElseThrow(RoleNotFoundException::new);</span>
+
+//        //historique
+//        Roles roleHist = new Roles();
+//        BeanUtils.copyProperties(role, roleHist);
+//        int maxSortOrder = roleRepository.findMaxRoleSortOrder();
+//        roleHist.setRoleSortOrder(maxSortOrder + 1);
+//        roleHist.setRoleCancel(0);
+//        roleHist.setRoleId(null);
+//        roleHist.setRoleUuid(UUID.randomUUID());
+//        roleHist.setRolePublished(0);
+//        roleHist.setRoleDateAdded(LocalDate.now());
+//        roleHist.setParentId(role.getRoleId());
+//        Roles savedRoleHist = roleRepository.save(roleHist);
+//        //end historique
+
+
+        // Mettre à jour les champs de base
+<span class="nc" id="L112">        role.setRoleName(request.getRoleName());</span>
+        // Supprimer les anciennes relations en base
+<span class="nc" id="L114">        roleModuleActionRepository.deleteByRole(role);</span>
+
+        //  Très important
+<span class="nc" id="L117">        role.getRoleModuleActions().clear();</span>
+
+        //  Recréer les nouvelles relations
+<span class="nc bnc" id="L120" title="All 4 branches missed.">        if (request.getModules() != null &amp;&amp; !request.getModules().isEmpty()) {</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            for (ModuleWithActionIdsRequest moduleRequest : request.getModules()) {</span>
+<span class="nc" id="L122">                Modules module = modulesRepository.findById(moduleRequest.getModuleId())</span>
+<span class="nc" id="L123">                        .orElseThrow(() -&gt; new IllegalArgumentException(</span>
+<span class="nc" id="L124">                                &quot;Module non trouvé : &quot; + moduleRequest.getModuleId()</span>
+                        ));
+
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                for (Long actionId : moduleRequest.getActionIds()) {</span>
+<span class="nc" id="L128">                    Actions action = actionsRepository.findById(actionId)</span>
+<span class="nc" id="L129">                            .orElseThrow(() -&gt; new IllegalArgumentException(</span>
+                                    &quot;Action non trouvée : &quot; + actionId
+                            ));
+
+<span class="nc" id="L133">                    RoleModuleAction rma = new RoleModuleAction();</span>
+<span class="nc" id="L134">                    rma.setRole(role);</span>
+<span class="nc" id="L135">                    rma.setModule(module);</span>
+<span class="nc" id="L136">                    rma.setAction(action);</span>
+
+<span class="nc" id="L138">                    role.getRoleModuleActions().add(rma);</span>
+<span class="nc" id="L139">                }</span>
+<span class="nc" id="L140">            }</span>
+        }
+
+
+<span class="nc" id="L144">        role.setRolePublished(1);</span>
+<span class="nc" id="L145">        role.setRoleCancel(0);</span>
+<span class="nc" id="L146">        Roles updatedRole = roleRepository.save(role);</span>
+
+        // Mapper User → UserResponse
+<span class="nc" id="L149">        UserResponse userResp = userMapper.toResponse(users);</span>
+<span class="nc" id="L150">        String token = null;</span>
+<span class="nc" id="L151">        return new LoginResponse(token, userResp);</span>
+    }
+    /***************/
+
+
+    @Override
+    public void deleteRole(Long id) {
+<span class="nc" id="L158">        Roles role = roleRepository.findByRoleId(id)</span>
+<span class="nc" id="L159">                .orElseThrow(RoleNotFoundException::new);</span>
+<span class="nc" id="L160">        roleRepository.delete(role);</span>
+<span class="nc" id="L161">    }</span>
+
+    @Override
+    @Transactional(readOnly = true)
+    public List&lt;RolesResponse&gt; getAllRolesResponse() {
+<span class="nc" id="L166">        return roleRepository.findAllPublishedAndActiveOrdered().stream()</span>
+<span class="nc" id="L167">                .map(roleMapper::toResponse)</span>
+<span class="nc" id="L168">                .toList();</span>
+    }
+
+
+    @Override
+    public Roles getRoleByName(String name) {
+<span class="nc" id="L174">        return roleRepository.findByRoleName(name)</span>
+<span class="nc" id="L175">                .orElseThrow(RoleNotFoundException::new);</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RolesResponse getRoleResponseById(Long id) {
+<span class="nc" id="L181">        Roles role = roleRepository.findById(id)</span>
+<span class="nc" id="L182">                .orElseThrow(RoleNotFoundException::new);</span>
+<span class="nc" id="L183">        return roleMapper.toResponse(role);</span>
+    }
+
+    @Override
+    public Roles getRoleById(Long id) {
+<span class="nc" id="L188">        return roleRepository.findById(id)</span>
+<span class="nc" id="L189">                .orElseThrow(RoleNotFoundException::new);</span>
+    }
+}
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

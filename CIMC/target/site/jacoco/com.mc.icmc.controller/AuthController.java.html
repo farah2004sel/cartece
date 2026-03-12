@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.controller</a> &gt; <span class="el_source">AuthController.java</span></div><h1>AuthController.java</h1><pre class="source lang-java linenums">package com.mc.icmc.controller;
+
+import com.mc.icmc.dto.request.ActionsRequest;
+import com.mc.icmc.dto.request.LoginRequest;
+import com.mc.icmc.dto.request.RegisterEmployeRequest;
+import com.mc.icmc.dto.request.RegisterRequest;
+import com.mc.icmc.dto.response.ActionsResponse;
+import com.mc.icmc.dto.response.LoginResponse;
+import com.mc.icmc.dto.response.RegisterResponse;
+import com.mc.icmc.dto.response.UserResponse;
+import com.mc.icmc.service.IAuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.mc.icmc.dto.request.VerifyEmailRequest;
+import java.util.List;
+import java.util.Map;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(&quot;/api/v1/auth&quot;)
+<span class="fc" id="L24">@Slf4j</span>
+public class AuthController {
+
+    private final IAuthService authService;
+
+    /**
+     * Endpoint pour l'enregistrement d'un nouvel utilisateur.
+     *
+     * @param registerRequest les informations de l'utilisateur à enregistrer
+     * @return RegisterResponse avec les informations de l'utilisateur créé
+     */
+    @PostMapping(&quot;/register&quot;)
+    public ResponseEntity&lt;RegisterResponse&gt; register(@Valid @RequestBody RegisterRequest registerRequest) {
+<span class="nc" id="L37">        RegisterResponse response = authService.register(registerRequest);</span>
+<span class="nc" id="L38">        return ResponseEntity.ok(response);</span>
+    }
+    @PostMapping(&quot;/verify-account&quot;)
+    public ResponseEntity&lt;?&gt; verifyAccount(@RequestBody VerifyEmailRequest request) {
+
+<span class="nc" id="L43">        boolean isVerified = authService.verifyConfirmeCompte(request.getEmail(), request.getCode());</span>
+
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if(isVerified){</span>
+<span class="nc" id="L46">            return ResponseEntity.ok().body(</span>
+<span class="nc" id="L47">                    Map.of(&quot;success&quot;, true, &quot;message&quot;, &quot;Compte confirmé avec succès&quot;)</span>
+            );
+        }else{
+<span class="nc" id="L50">            return ResponseEntity.badRequest().body(</span>
+<span class="nc" id="L51">                    Map.of(&quot;success&quot;, false, &quot;message&quot;, &quot;Code invalide ou expiré&quot;)</span>
+            );
+        }
+    }
+    @PostMapping(&quot;/resend-code&quot;)
+    public ResponseEntity&lt;?&gt; resendCode(@RequestBody Map&lt;String,String&gt; request) {
+
+<span class="nc" id="L58">        String email = request.get(&quot;email&quot;);</span>
+
+<span class="nc" id="L60">        authService.resendVerificationCode(email);</span>
+
+<span class="nc" id="L62">        return ResponseEntity.ok(</span>
+<span class="nc" id="L63">                Map.of(&quot;success&quot;, true, &quot;message&quot;, &quot;Un nouveau code a été envoyé&quot;)</span>
+        );
+    }
+
+    /**
+     * Endpoint pour la connexion d'un utilisateur.
+     *
+     * @param loginRequest les informations de connexion (username/email + mot de passe)
+     * @return LoginResponse avec le token JWT et les informations utilisateur
+     */
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;LoginResponse&gt; login(@Valid @RequestBody LoginRequest loginRequest) {
+<span class="nc" id="L75">        LoginResponse response = authService.login(loginRequest);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok(response);</span>
+    }
+
+    // récupérer tous les users triés
+    @GetMapping(&quot;/users&quot;)
+    public List&lt;UserResponse&gt; getAllUsers() {
+<span class="nc" id="L82">        return authService.getAllUsersOrderBySortOrderDesc();</span>
+    }
+
+
+    /**
+     * Archie user existante.
+     *
+     * @param id       l'identifiant d User
+     * @return user mise à jour
+     */
+    @PutMapping(&quot;/archive/{id}&quot;)
+    public ResponseEntity&lt;UserResponse&gt; archiveUserById(
+            @PathVariable Long id) {
+<span class="nc" id="L95">        UserResponse response = authService.archiveUserById(id);</span>
+<span class="nc" id="L96">        return ResponseEntity.ok(response);</span>
+    }
+
+    //les service de mot de passe oublie
+    @PostMapping(&quot;/forgot-password&quot;)
+    public ResponseEntity&lt;?&gt; forgotPassword(@RequestParam String email) {
+
+<span class="nc" id="L103">        authService.forgotPassword(email);</span>
+
+<span class="nc" id="L105">        return ResponseEntity.ok(</span>
+<span class="nc" id="L106">                Map.of(</span>
+<span class="nc" id="L107">                        &quot;success&quot;, true,</span>
+                        &quot;message&quot;, &quot;Code envoyé à votre email&quot;
+                )
+        );
+    }
+
+    @PostMapping(&quot;/verify-key&quot;)
+    public ResponseEntity&lt;?&gt; verifyKey(@RequestParam String email, @RequestParam String key) {
+<span class="nc" id="L115">        boolean isValid = authService.verifyResetKey(email, key);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        return ResponseEntity.ok(isValid ? &quot;Clé valide.&quot; : &quot;Clé invalide.&quot;);</span>
+    }
+
+    @PostMapping(&quot;/reset-password&quot;)
+    public ResponseEntity&lt;?&gt; resetPassword(
+            @RequestParam String email,
+            @RequestParam String key,
+            @RequestParam String newPassword
+    ) {
+
+<span class="nc" id="L126">        authService.resetPassword(email, key, newPassword);</span>
+
+<span class="nc" id="L128">        return ResponseEntity.ok(</span>
+<span class="nc" id="L129">                Map.of(</span>
+<span class="nc" id="L130">                        &quot;success&quot;, true,</span>
+                        &quot;message&quot;, &quot;Mot de passe réinitialisé avec succès&quot;
+                )
+        );
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

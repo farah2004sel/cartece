@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActionsServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.service.impl</a> &gt; <span class="el_source">ActionsServiceImpl.java</span></div><h1>ActionsServiceImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.service.impl;
+
+import com.mc.icmc.domain.Actions;
+import com.mc.icmc.dto.mapper.IActionsMapper;
+import com.mc.icmc.dto.request.ActionsRequest;
+import com.mc.icmc.dto.request.LogUserRequest;
+import com.mc.icmc.dto.response.ActionsResponse;
+import com.mc.icmc.error.exception.ActionAlreadyExistsException;
+import com.mc.icmc.error.exception.ActionNotFoundException;
+import com.mc.icmc.repository.IActionsRepository;
+import com.mc.icmc.service.IActionsService;
+import com.mc.icmc.service.ILogUserService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class ActionsServiceImpl implements IActionsService {
+
+    private final IActionsRepository actionsRepository;
+    private final IActionsMapper actionsMapper;
+    private final ILogUserService logUserService;
+
+    @Override
+    public ActionsResponse createAction(ActionsRequest request) {
+        // Vérifier si un actionTitle existe deja
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (actionsRepository.existsByActionTitle(request.getActionTitle())) {</span>
+<span class="nc" id="L34">            throw new ActionAlreadyExistsException(request.getActionTitle());</span>
+        }
+
+<span class="nc" id="L37">        Actions action = actionsMapper.toEntity(request);</span>
+<span class="nc" id="L38">        action = actionsRepository.save(action);</span>
+
+<span class="nc" id="L40">        return actionsMapper.toResponse(action);</span>
+    }
+
+
+    @Override
+    public ActionsResponse updateAction(Long actionId, ActionsRequest request) {
+<span class="nc" id="L46">        Actions action = actionsRepository.findById(actionId)</span>
+<span class="nc" id="L47">                .orElseThrow(ActionNotFoundException::new);</span>
+
+<span class="nc" id="L49">        actionsRepository.findByActionTitle(request.getActionTitle())</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">                .filter(a -&gt; !a.getActionId().equals(actionId))</span>
+<span class="nc" id="L51">                .ifPresent(a -&gt; {</span>
+<span class="nc" id="L52">                    throw new ActionAlreadyExistsException(request.getActionTitle());</span>
+                });
+
+<span class="nc" id="L55">        action.setActionTitle(request.getActionTitle());</span>
+
+<span class="nc" id="L57">        action = actionsRepository.save(action);</span>
+
+<span class="nc" id="L59">        return actionsMapper.toResponse(action);</span>
+    }
+
+    @Override
+    public ActionsResponse getActionById(Long actionId) {
+<span class="nc" id="L64">        Actions action = actionsRepository.findById(actionId)</span>
+<span class="nc" id="L65">                .orElseThrow(ActionNotFoundException::new);</span>
+
+<span class="nc" id="L67">        return actionsMapper.toResponse(action);</span>
+    }
+
+
+    @Override
+    public List&lt;ActionsResponse&gt; getAllActions() {
+<span class="nc" id="L73">        return actionsRepository.findAll()</span>
+<span class="nc" id="L74">                .stream()</span>
+<span class="nc" id="L75">                .map(actionsMapper::toResponse)</span>
+<span class="nc" id="L76">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public void deleteAction(Long actionId) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (!actionsRepository.existsById(actionId)) {</span>
+<span class="nc" id="L82">            throw new ActionNotFoundException();</span>
+        }
+<span class="nc" id="L84">        actionsRepository.deleteById(actionId);</span>
+<span class="nc" id="L85">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

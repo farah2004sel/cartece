@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogUserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.service.impl</a> &gt; <span class="el_source">LogUserServiceImpl.java</span></div><h1>LogUserServiceImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.service.impl;
+
+import com.mc.icmc.domain.Log_User;
+import com.mc.icmc.domain.Modules;
+import com.mc.icmc.domain.Actions;
+import com.mc.icmc.domain.Users;
+import com.mc.icmc.dto.mapper.ILogUserMapper;
+import com.mc.icmc.dto.request.LogUserRequest;
+import com.mc.icmc.dto.response.LogUserResponse;
+import com.mc.icmc.error.exception.ActionNotFoundException;
+import com.mc.icmc.error.exception.LogUserNotFoundException;
+import com.mc.icmc.error.exception.ModuleNotFoundException;
+import com.mc.icmc.error.exception.UserNotFoundException;
+import com.mc.icmc.repository.IActionsRepository;
+import com.mc.icmc.repository.ILogUserRepository;
+import com.mc.icmc.repository.IModulesRepository;
+import com.mc.icmc.repository.IUserRepository;
+import com.mc.icmc.service.ILogUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class LogUserServiceImpl implements ILogUserService {
+
+    private final ILogUserRepository logUserRepository;
+    private final IUserRepository usersRepository;
+    private final IModulesRepository modulesRepository;
+    private final IActionsRepository actionsRepository;
+    private final ILogUserMapper logUserMapper;
+
+    @Override
+    public LogUserResponse createLogUser(LogUserRequest request, String clientIp) {
+        // Vérifier l'utilisateur
+<span class="nc" id="L39">        Users user = usersRepository.findById(request.getUserId())</span>
+<span class="nc" id="L40">                .orElseThrow(UserNotFoundException::new);</span>
+
+        // Vérifier le module si fourni
+<span class="nc" id="L43">        Modules module = null;</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (request.getModuleId() != null) {</span>
+<span class="nc" id="L45">            module = modulesRepository.findById(request.getModuleId())</span>
+<span class="nc" id="L46">                    .orElseThrow(ModuleNotFoundException::new);</span>
+        }
+
+        // Vérifier l'action si fournie
+<span class="nc" id="L50">        Actions action = null;</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (request.getActionId() != null) {</span>
+<span class="nc" id="L52">            action = actionsRepository.findById(request.getActionId())</span>
+<span class="nc" id="L53">                    .orElseThrow(ActionNotFoundException::new);</span>
+        }
+
+        // Mapper la request en entity
+<span class="nc" id="L57">        Log_User logUser = logUserMapper.toEntity(request);</span>
+
+        // Associer les entités vérifiées
+<span class="nc" id="L60">        logUser.setUser(user);</span>
+<span class="nc" id="L61">        logUser.setModule(module);</span>
+<span class="nc" id="L62">        logUser.setAction(action);</span>
+
+        // Utilisation de l’IP reçue
+<span class="nc" id="L65">        logUser.setLogUserIp(clientIp);</span>
+
+
+        //  Récupération de la MAC à partir de l’IP
+<span class="nc" id="L69">        String macAddress = MacAddressUtil.getMacAddress(clientIp);</span>
+<span class="nc" id="L70">        logUser.setMacVendeur(macAddress);</span>
+
+        // Sauvegarder en base
+<span class="nc" id="L73">        logUser = logUserRepository.save(logUser);</span>
+
+<span class="nc" id="L75">        return logUserMapper.toResponse(logUser);</span>
+    }
+
+    @Override
+    public LogUserResponse getLogUserByUuid(UUID uuid) {
+<span class="nc" id="L80">        Log_User logUser = logUserRepository.findByLogUserUuid(uuid);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (logUser == null) throw new LogUserNotFoundException();</span>
+<span class="nc" id="L82">        return logUserMapper.toResponse(logUser);</span>
+    }
+
+    @Override
+    public List&lt;LogUserResponse&gt; getAllLogUsers() {
+<span class="nc" id="L87">        return logUserRepository.findAll()</span>
+<span class="nc" id="L88">                .stream()</span>
+<span class="nc" id="L89">                .map(logUserMapper::toResponse)</span>
+<span class="nc" id="L90">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public void deleteLogUser(UUID uuid) {
+<span class="nc" id="L95">        Log_User logUser = logUserRepository.findByLogUserUuid(uuid);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (logUser == null) throw new LogUserNotFoundException();</span>
+<span class="nc" id="L97">        logUserRepository.delete(logUser);</span>
+<span class="nc" id="L98">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

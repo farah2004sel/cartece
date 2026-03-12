@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Users_.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.domain</a> &gt; <span class="el_source">Users_.java</span></div><h1>Users_.java</h1><pre class="source lang-java linenums">package com.mc.icmc.domain;
+
+import jakarta.annotation.Generated;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.StaticMetamodel;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@StaticMetamodel(Users.class)
+@Generated(&quot;org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor&quot;)
+<span class="nc" id="L12">public abstract class Users_ {</span>
+
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userPassword
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userPassword;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#role
+	 **/
+	public static volatile SingularAttribute&lt;Users, Roles&gt; role;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userPhone
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userPhone;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userConfirmedAt
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDateTime&gt; userConfirmedAt;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userFirstName
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userFirstName;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userDateAdded
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDate&gt; userDateAdded;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userName
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userName;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userCodeDateExp
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDateTime&gt; userCodeDateExp;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userDateEdit
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDate&gt; userDateEdit;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userKey
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userKey;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userCode
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userCode;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userCancel
+	 **/
+	public static volatile SingularAttribute&lt;Users, Integer&gt; userCancel;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userSortOrder
+	 **/
+	public static volatile SingularAttribute&lt;Users, Integer&gt; userSortOrder;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userParentId
+	 **/
+	public static volatile SingularAttribute&lt;Users, Long&gt; userParentId;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userLastName
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userLastName;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userPublished
+	 **/
+	public static volatile SingularAttribute&lt;Users, Integer&gt; userPublished;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userFocus
+	 **/
+	public static volatile SingularAttribute&lt;Users, Integer&gt; userFocus;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userEmail
+	 **/
+	public static volatile SingularAttribute&lt;Users, String&gt; userEmail;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userLockUntil
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDateTime&gt; userLockUntil;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#id
+	 **/
+	public static volatile SingularAttribute&lt;Users, Long&gt; id;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users
+	 **/
+	public static volatile EntityType&lt;Users&gt; class_;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userFailedLoginAttempts
+	 **/
+	public static volatile SingularAttribute&lt;Users, Integer&gt; userFailedLoginAttempts;
+	
+	/**
+	 * @see com.mc.icmc.domain.Users#userDateConnect
+	 **/
+	public static volatile SingularAttribute&lt;Users, LocalDateTime&gt; userDateConnect;
+
+	public static final String USER_PASSWORD = &quot;userPassword&quot;;
+	public static final String ROLE = &quot;role&quot;;
+	public static final String USER_PHONE = &quot;userPhone&quot;;
+	public static final String USER_CONFIRMED_AT = &quot;userConfirmedAt&quot;;
+	public static final String USER_FIRST_NAME = &quot;userFirstName&quot;;
+	public static final String USER_DATE_ADDED = &quot;userDateAdded&quot;;
+	public static final String USER_NAME = &quot;userName&quot;;
+	public static final String USER_CODE_DATE_EXP = &quot;userCodeDateExp&quot;;
+	public static final String USER_DATE_EDIT = &quot;userDateEdit&quot;;
+	public static final String USER_KEY = &quot;userKey&quot;;
+	public static final String USER_CODE = &quot;userCode&quot;;
+	public static final String USER_CANCEL = &quot;userCancel&quot;;
+	public static final String USER_SORT_ORDER = &quot;userSortOrder&quot;;
+	public static final String USER_PARENT_ID = &quot;userParentId&quot;;
+	public static final String USER_LAST_NAME = &quot;userLastName&quot;;
+	public static final String USER_PUBLISHED = &quot;userPublished&quot;;
+	public static final String USER_FOCUS = &quot;userFocus&quot;;
+	public static final String USER_EMAIL = &quot;userEmail&quot;;
+	public static final String USER_LOCK_UNTIL = &quot;userLockUntil&quot;;
+	public static final String ID = &quot;id&quot;;
+	public static final String USER_FAILED_LOGIN_ATTEMPTS = &quot;userFailedLoginAttempts&quot;;
+	public static final String USER_DATE_CONNECT = &quot;userDateConnect&quot;;
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

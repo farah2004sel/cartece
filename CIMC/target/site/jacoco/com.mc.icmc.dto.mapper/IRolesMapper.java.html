@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IRolesMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.dto.mapper</a> &gt; <span class="el_source">IRolesMapper.java</span></div><h1>IRolesMapper.java</h1><pre class="source lang-java linenums">package com.mc.icmc.dto.mapper;
+
+import com.mc.icmc.domain.Modules;
+import com.mc.icmc.domain.RoleModuleAction;
+import com.mc.icmc.domain.Roles;
+import com.mc.icmc.dto.request.RolesRequest;
+import com.mc.icmc.dto.response.ActionsResponse;
+import com.mc.icmc.dto.response.ModulesResponse;
+import com.mc.icmc.dto.response.RolesResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface IRolesMapper {
+
+    /**
+     * Convertit un RolesRequest en Roles entity.
+     *
+     * Note : la liste des modules est ignorée ici car la liaison
+     * avec les modules existants se fait dans le service.
+     */
+    @Mapping(target = &quot;roleId&quot;, ignore = true)
+    @Mapping(target = &quot;roleModuleActions&quot;, ignore = true)
+    Roles toEntity(RolesRequest request);
+
+    /**
+     * Convertit une entity Roles en RolesResponse,
+     * en incluant les modules et leurs actions.
+     */
+    default RolesResponse toResponse(Roles role) {
+        // Grouper les RoleModuleAction par module
+<span class="nc" id="L40">        List&lt;ModulesResponse&gt; modules = role.getRoleModuleActions().stream()</span>
+<span class="nc" id="L41">                .collect(Collectors.groupingBy(RoleModuleAction::getModule))</span>
+<span class="nc" id="L42">                .entrySet().stream()</span>
+<span class="nc" id="L43">                .map(entry -&gt; {</span>
+<span class="nc" id="L44">                    Modules module = entry.getKey();</span>
+<span class="nc" id="L45">                    List&lt;ActionsResponse&gt; actions = entry.getValue().stream()</span>
+<span class="nc" id="L46">                            .map(RoleModuleAction::getAction)</span>
+<span class="nc" id="L47">                            .distinct()</span>
+<span class="nc" id="L48">                            .map(action -&gt; new ActionsResponse(</span>
+<span class="nc" id="L49">                                    action.getActionId(),</span>
+<span class="nc" id="L50">                                    action.getActionTitle()</span>
+                            ))
+<span class="nc" id="L52">                            .toList();</span>
+
+<span class="nc" id="L54">                    return new ModulesResponse(</span>
+<span class="nc" id="L55">                            module.getModuleId(),</span>
+<span class="nc" id="L56">                            module.getModuleName(),</span>
+                            actions
+                    );
+                })
+<span class="nc" id="L60">                .toList();</span>
+
+
+<span class="nc" id="L63">        return new RolesResponse(</span>
+<span class="nc" id="L64">                role.getRoleId(),</span>
+<span class="nc" id="L65">                role.getRoleName(),</span>
+                modules
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

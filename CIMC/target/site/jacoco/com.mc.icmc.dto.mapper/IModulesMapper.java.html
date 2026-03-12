@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IModulesMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.dto.mapper</a> &gt; <span class="el_source">IModulesMapper.java</span></div><h1>IModulesMapper.java</h1><pre class="source lang-java linenums">package com.mc.icmc.dto.mapper;
+
+import com.mc.icmc.domain.Modules;
+import com.mc.icmc.domain.RoleModuleAction;
+import com.mc.icmc.dto.request.ModulesRequest;
+import com.mc.icmc.dto.response.ActionsResponse;
+import com.mc.icmc.dto.response.ModulesResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
+
+@Mapper(
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface IModulesMapper {
+
+    // Request -&gt; Entity (création de module)
+    @Mapping(target = &quot;moduleId&quot;, ignore = true)
+    Modules toEntity(ModulesRequest request);
+
+    // Entity -&gt; Response avec actions
+    default ModulesResponse toResponse(Modules module) {
+<span class="nc" id="L27">        List&lt;ActionsResponse&gt; actions = module.getRoleModuleActions().stream()</span>
+<span class="nc" id="L28">                .map(RoleModuleAction::getAction)</span>
+<span class="nc" id="L29">                .distinct() // Évite les doublons si le module est lié à plusieurs rôles</span>
+<span class="nc" id="L30">                .map(action -&gt; new ActionsResponse(</span>
+<span class="nc" id="L31">                        action.getActionId(),</span>
+<span class="nc" id="L32">                        action.getActionTitle()</span>
+                ))
+<span class="nc" id="L34">                .toList();</span>
+
+<span class="nc" id="L36">        return new ModulesResponse(</span>
+<span class="nc" id="L37">                module.getModuleId(),</span>
+<span class="nc" id="L38">                module.getModuleName(),</span>
+                actions
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

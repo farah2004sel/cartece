@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RolesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.controller</a> &gt; <span class="el_source">RolesController.java</span></div><h1>RolesController.java</h1><pre class="source lang-java linenums">package com.mc.icmc.controller;
+
+import com.mc.icmc.dto.request.RolesRequest;
+import com.mc.icmc.dto.response.LoginResponse;
+import com.mc.icmc.dto.response.RolesResponse;
+import com.mc.icmc.service.IRoleService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Contrôleur REST pour la gestion des rôles.
+ * Permet de créer, mettre à jour, récupérer et supprimer des rôles
+ * avec liaison aux modules existants via leurs IDs.
+ *
+ * Les réponses utilisent {@link RolesResponse}.
+ * Les requêtes utilisent {@link RolesRequest}.
+ *
+ * @author Ghazi Ben Yahya
+ */
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(&quot;/api/v1/roles&quot;)
+<span class="fc" id="L29">@Slf4j</span>
+public class RolesController {
+
+    private final IRoleService roleService;
+
+    /**
+     * Retrieves all roles.
+     * Returns a list of all roles mapped to {@link RolesResponse} objects.
+     *
+     * @return a {@link ResponseEntity} containing a list of {@link RolesResponse} objects
+     */
+    @GetMapping(&quot;/&quot;)
+    public ResponseEntity&lt;List&lt;RolesResponse&gt;&gt; getAllRoles() {
+<span class="nc" id="L42">        return ResponseEntity.ok(roleService.getAllRolesResponse());</span>
+    }
+
+
+
+    /**
+     * Creates a new role.
+     *
+     * @param rolesRequest the role data
+     * @return a {@link ResponseEntity} containing the created {@link RolesResponse}
+     */
+    @PostMapping(&quot;/&quot;)
+    public ResponseEntity&lt;RolesResponse&gt; createRole(
+            @Valid @RequestBody RolesRequest rolesRequest) {
+<span class="nc" id="L56">        RolesResponse response = roleService.createRole(rolesRequest);</span>
+<span class="nc" id="L57">        return ResponseEntity.ok(response);</span>
+    }
+
+
+    @PutMapping(&quot;/role/{id}/user/{user_id}&quot;)
+    public ResponseEntity&lt;LoginResponse&gt; updateRoleById(
+            @PathVariable Long id,
+            @PathVariable Long user_id,
+            @Valid @RequestBody RolesRequest rolesRequest) {
+<span class="nc" id="L66">        LoginResponse response = roleService.updateRoleById(id, user_id, rolesRequest);</span>
+<span class="nc" id="L67">        return ResponseEntity.ok(response);</span>
+    }
+
+    /**
+     * Deletes a role by its UUID.
+     *
+     * @param id the UUID of the role to delete
+     * @return a {@link ResponseEntity} with no content
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteRole(@PathVariable Long id) {
+<span class="nc" id="L78">        roleService.deleteRole(id);</span>
+<span class="nc" id="L79">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;RolesResponse&gt; getRoleById(@PathVariable Long id) {
+<span class="nc" id="L84">        RolesResponse response = roleService.getRoleResponseById(id);</span>
+<span class="nc" id="L85">        return ResponseEntity.ok(response);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

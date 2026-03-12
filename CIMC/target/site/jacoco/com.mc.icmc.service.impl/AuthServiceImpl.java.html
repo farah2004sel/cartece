@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.service.impl</a> &gt; <span class="el_source">AuthServiceImpl.java</span></div><h1>AuthServiceImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.service.impl;
+
+import com.mc.icmc.domain.Roles;
+import com.mc.icmc.domain.Users;
+import com.mc.icmc.dto.mapper.IUserMapper;
+import com.mc.icmc.dto.request.LoginRequest;
+import com.mc.icmc.dto.request.RegisterRequest;
+import com.mc.icmc.dto.response.LoginResponse;
+import com.mc.icmc.dto.response.RegisterResponse;
+import com.mc.icmc.dto.response.UserResponse;
+import com.mc.icmc.error.exception.UserNotFoundException;
+//import com.mc.icmc.repository.IConcoursEmployeRepository;
+import com.mc.icmc.repository.IUserRepository;
+import com.mc.icmc.service.IAuthService;
+import com.mc.icmc.service.IRoleService;
+import com.mc.icmc.service.JwtService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.security.SecureRandom;
+
+<span class="fc" id="L28">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class AuthServiceImpl implements IAuthService {
+
+    private final IUserMapper userMapper;
+    private final IRoleService roleService;
+    private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final EmailServiceImpl emailService;
+    private final com.mc.icmc.repository.ICommercantRepository commercantRepository;
+    private static final String CHARACTERS =
+            &quot;ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789&quot;;
+
+<span class="fc" id="L43">    private static final SecureRandom secureRandom = new SecureRandom();</span>
+
+    private String generateSecureCode(int length) {
+<span class="nc" id="L46">        StringBuilder code = new StringBuilder(length);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        for (int i = 0; i &lt; length; i++) {</span>
+<span class="nc" id="L48">            int index = secureRandom.nextInt(CHARACTERS.length());</span>
+<span class="nc" id="L49">            code.append(CHARACTERS.charAt(index));</span>
+        }
+<span class="nc" id="L51">        return code.toString();</span>
+    }
+    @Override
+    public RegisterResponse register(RegisterRequest request) {
+        // Vérifier si username ou email existe déjà
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (userRepository.existsByUserName(request.getUsername())) {</span>
+<span class="nc" id="L57">            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,&quot;Username is already taken!&quot;);</span>
+        }
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (userRepository.existsByUserEmail(request.getEmail())) {</span>
+<span class="nc" id="L60">            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,&quot;Email is already taken!&quot;);</span>
+        }
+
+        // Récupérer le rôle par ID
+<span class="nc" id="L64">        Roles role = roleService.getRoleById(request.getRoleId()); // &lt;-- méthode à créer si elle n'existe pas</span>
+
+        // Mapper RegisterRequest → User
+<span class="nc" id="L67">        Users user = userMapper.toEntity(request);</span>
+<span class="nc" id="L68">        user.setRole(role);</span>
+
+        // Encoder le mot de passe
+<span class="nc" id="L71">        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));</span>
+        //save code and time code
+<span class="nc" id="L73">        user.setUserCode(generateSecureCode(6));</span>
+        // FIX: Add 2 hours to compensate for any UTC/Local timezone mismatch bugs during development
+<span class="nc" id="L75">        user.setUserCodeDateExp(LocalDateTime.now().plusHours(2));</span>
+
+        // Sauvegarder l'utilisateur
+<span class="nc" id="L78">        Users savedUser = userRepository.save(user);</span>
+
+        // Sauvegarder Commercant si le rôle est COMMERCANT
+<span class="nc bnc" id="L81" title="All 4 branches missed.">        if (role != null &amp;&amp; &quot;COMMERCANT&quot;.equalsIgnoreCase(role.getRoleName())) {</span>
+<span class="nc" id="L82">            com.mc.icmc.domain.Commercant commercant = new com.mc.icmc.domain.Commercant();</span>
+<span class="nc" id="L83">            commercant.setUser(savedUser);</span>
+<span class="nc" id="L84">            commercant.setTypePersonne(request.getTypePersonne());</span>
+<span class="nc" id="L85">            commercant.setSociete(request.getSociete());</span>
+<span class="nc" id="L86">            commercant.setNationaliteId(request.getNationaliteId());</span>
+<span class="nc" id="L87">            commercantRepository.save(commercant);</span>
+        }
+
+        // Mapper User → UserResponse
+<span class="nc" id="L91">        UserResponse userResp = userMapper.toResponse(savedUser);</span>
+
+        //Send mail
+        try {
+<span class="nc" id="L95">            emailService.sendEmail(</span>
+<span class="nc" id="L96">                    user.getUserEmail(),</span>
+                    &quot;Code de vérification&quot;,
+<span class="nc" id="L98">                    &quot;Votre code de vérification est : &quot; + user.getUserCode()</span>
+            );
+<span class="nc" id="L100">        } catch (Exception e) {</span>
+<span class="nc" id="L101">            log.error(&quot;Erreur lors de l'envoi de l'email&quot;, e);</span>
+<span class="nc" id="L102">        }</span>
+<span class="nc" id="L103">        return new RegisterResponse(&quot;User registered successfully&quot;, userResp);</span>
+    }
+
+//    @Override
+//    public RegisterResponse registerEmploye(RegisterEmployeRequest request) {
+//        // Vérifier si username ou email existe déjà
+//        if (userRepository.existsByUsername(request.getUsername())) {
+//            throw new RuntimeException(&quot;Username is already taken!&quot;);
+//        }
+//        if (userRepository.existsByEmail(request.getEmail())) {
+//            throw new RuntimeException(&quot;Email is already taken!&quot;);
+//        }
+//
+//        // Récupérer le rôle par ID
+//        Roles role = roleService.getRoleById(request.getRoleId()); // &lt;-- méthode à créer si elle n'existe pas
+//
+//        // Mapper RegisterRequest → User
+//        Users user = userMapper.RegisterEmployeToEntity(request);
+//        user.setRole(role);
+//
+//        // Encoder le mot de passe
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//
+//        // Récupérer le max actuel du sort order et l'incrémenter
+//        int maxSortOrder = userRepository.findMaxSortOrder();
+//        user.setSortOrder(maxSortOrder + 1);
+//
+//        // Sauvegarder l'utilisateur
+//        Users savedUser = userRepository.save(user);
+//
+//        //  Récupérer l'employé à partir de l'ID
+//        ConcoursEmploye employe = employeRepository.findById(request.getEmployeId())
+//                .orElseThrow(EmployeNotFoundException::new);
+//
+//        //  Lier le compte utilisateur à l’employé
+//        employe.setUser(savedUser);
+//        employeRepository.save(employe);
+//
+//        // Mapper User → UserResponse
+//        UserResponse userResp = userMapper.toResponse(savedUser);
+//
+//        return new RegisterResponse(&quot;User registered successfully&quot;, userResp);
+//    }
+
+//    @Override
+//    public LoginResponse login(LoginRequest request) {
+//        // Récupérer l'utilisateur par username ou email
+//        Users users = userRepository.findByUsername(request.getUsernameOrEmail())
+//                .orElseGet(() -&gt; userRepository.findByEmail(request.getUsernameOrEmail())
+//                        .orElseThrow(() -&gt; new RuntimeException(&quot;User not found&quot;)));
+//
+//        // Vérifier le mot de passe
+//        if (!passwordEncoder.matches(request.getPassword(), users.getPassword())) {
+//            throw new RuntimeException(&quot;Invalid credentials&quot;);
+//        }
+//
+//        // Générer le JWT token
+//        String token = jwtService.generateToken(users);
+//
+//        // Mapper User → UserResponse
+//        UserResponse userResp = userMapper.toResponse(users);
+//
+//        return new LoginResponse(token, userResp);
+//    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+
+<span class="nc" id="L171">        Users user = userRepository.findByUserName(request.getUsernameOrEmail())</span>
+<span class="nc" id="L172">                .orElseGet(() -&gt; userRepository.findByUserEmail(request.getUsernameOrEmail())</span>
+<span class="nc" id="L173">                        .orElseThrow(() -&gt; new ResponseStatusException(</span>
+                                HttpStatus.BAD_REQUEST,
+                                &quot;Login ou mot de passe incorrect !&quot;
+                        ))
+                );
+
+        //  Vérifier si le compte est bloqué
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (isAccountLocked(user)) {</span>
+<span class="nc" id="L181">            throw new ResponseStatusException(</span>
+                    HttpStatus.BAD_REQUEST,
+                    &quot;Compte temporairement indisponible. Veuillez réessayer ultérieurement.&quot;
+            );
+        }
+
+        //  Mot de passe incorrect
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (!passwordEncoder.matches(request.getPassword(), user.getUserPassword())) {</span>
+<span class="nc" id="L189">            incrementLoginAttempts(user, 5, 15); // 5 tentatives → 15 min</span>
+<span class="nc" id="L190">            throw new ResponseStatusException(</span>
+                    HttpStatus.BAD_REQUEST,
+                    &quot;Login ou mot de passe incorrect.&quot;
+            );
+        }
+
+        //  Login réussi → reset
+<span class="nc" id="L197">        resetLoginAttempts(user);</span>
+
+        //  Générer token
+<span class="nc" id="L200">        String token = jwtService.generateToken(user);</span>
+
+<span class="nc" id="L202">        UserResponse userResp = userMapper.toResponse(user);</span>
+
+<span class="nc" id="L204">        return new LoginResponse(token, userResp);</span>
+    }
+
+
+    @Override
+    public List&lt;UserResponse&gt; getAllUsersOrderBySortOrderDesc() {
+<span class="nc" id="L210">        return userRepository.findAllActiveUsersOrderBySortOrderDesc()</span>
+<span class="nc" id="L211">                .stream()</span>
+<span class="nc" id="L212">                .map(userMapper::toResponse)</span>
+<span class="nc" id="L213">                .toList();</span>
+    }
+
+
+    //Archive utilisateur
+    @Override
+    public UserResponse archiveUserById(Long id) {
+        // Récupérer l’utilisateur
+<span class="nc" id="L221">        Users user = userRepository.findById(id)</span>
+<span class="nc" id="L222">                .orElseThrow(UserNotFoundException::new);</span>
+
+<span class="nc" id="L224">        user.setUserCancel(1);</span>
+
+        // Sauvegarde de la mise à jour
+<span class="nc" id="L227">        Users updatedUser = userRepository.save(user);</span>
+
+        // Retourner le DTO UserResponse
+<span class="nc" id="L230">        return userMapper.toResponse(updatedUser);</span>
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+
+        // chercher user
+<span class="nc" id="L237">        Users user = userRepository.findByUserEmail(email)</span>
+<span class="nc" id="L238">                .orElseThrow(() -&gt;</span>
+<span class="nc" id="L239">                        new ResponseStatusException(HttpStatus.BAD_REQUEST,</span>
+                                &quot;Aucun compte trouvé avec cet email.&quot;)
+                );
+
+        // générer code sécurisé
+<span class="nc" id="L244">        String resetCode = generateSecureCode(6);</span>
+
+        // sauvegarder code
+<span class="nc" id="L247">        user.setUserKey(resetCode);</span>
+<span class="nc" id="L248">        userRepository.save(user);</span>
+
+        // envoyer email
+        try {
+<span class="nc" id="L252">            emailService.sendEmail(</span>
+<span class="nc" id="L253">                    user.getUserEmail(),</span>
+                    &quot;Réinitialisation du mot de passe&quot;,
+                    &quot;Votre code de réinitialisation est : &quot; + resetCode
+            );
+<span class="nc" id="L257">        } catch (Exception e) {</span>
+<span class="nc" id="L258">            log.error(&quot;Erreur lors de l'envoi de l'email&quot;, e);</span>
+<span class="nc" id="L259">        }</span>
+<span class="nc" id="L260">    }</span>
+
+    @Override
+    public boolean verifyResetKey(String email, String key) {
+<span class="nc" id="L264">        Users user = userRepository.findByUserEmail(email)</span>
+<span class="nc" id="L265">                .orElseThrow(() -&gt; new RuntimeException(&quot;Aucun compte trouvé avec cet email.&quot;));</span>
+
+<span class="nc bnc" id="L267" title="All 4 branches missed.">        if (user.getUserKey() == null || !user.getUserKey().equals(key)) {</span>
+<span class="nc" id="L268">            throw new RuntimeException(&quot;Clé invalide ou expirée.&quot;);</span>
+        }
+
+<span class="nc" id="L271">        return true;</span>
+    }
+
+    @Override
+    public boolean verifyConfirmeCompte(String email, String code) {
+
+        // 1️ Chercher user par email
+<span class="nc" id="L278">        Users user = userRepository.findByUserEmail(email)</span>
+<span class="nc" id="L279">                .orElseThrow(UserNotFoundException::new);</span>
+
+        // 2 Vérifier si code correspond
+<span class="nc bnc" id="L282" title="All 4 branches missed.">        if (user.getUserCode() == null || !user.getUserCode().equals(code)) {</span>
+<span class="nc" id="L283">            System.out.println(&quot;VERIFICATION FAILED: Code mismatch. Expected: &quot; + user.getUserCode() + &quot;, Got: &quot; + code);</span>
+<span class="nc" id="L284">            throw new ResponseStatusException(</span>
+                    HttpStatus.BAD_REQUEST,&quot;Code invalide&quot;);
+        }
+
+        // 3️ Vérifier expiration
+<span class="nc bnc" id="L289" title="All 2 branches missed.">        if (user.getUserCodeDateExp() == null ||</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">                user.getUserCodeDateExp().isBefore(LocalDateTime.now())) {</span>
+<span class="nc" id="L291">            System.out.println(&quot;VERIFICATION FAILED: Code expired. Exp Date: &quot; + user.getUserCodeDateExp() + &quot;, Now: &quot; + LocalDateTime.now());</span>
+<span class="nc" id="L292">            throw new ResponseStatusException(</span>
+                    HttpStatus.BAD_REQUEST,&quot;Code expiré&quot;);
+        }
+
+        // 4️ Confirmer le compte
+<span class="nc" id="L297">        user.setUserConfirmedAt(LocalDateTime.now());</span>
+
+        // 5️ Nettoyer le code
+<span class="nc" id="L300">        user.setUserCode(null);</span>
+<span class="nc" id="L301">        user.setUserCodeDateExp(null);</span>
+
+<span class="nc" id="L303">        userRepository.save(user);</span>
+
+<span class="nc" id="L305">        return true;</span>
+    }
+
+
+    @Override
+    public void resetPassword(String email, String key, String newPassword) {
+<span class="nc" id="L311">        Users user = userRepository.findByUserEmail(email)</span>
+<span class="nc" id="L312">                .orElseThrow(() -&gt; new RuntimeException(&quot;Aucun compte trouvé avec cet email.&quot;));</span>
+
+<span class="nc bnc" id="L314" title="All 4 branches missed.">        if (user.getUserKey() == null || !user.getUserKey().equals(key)) {</span>
+<span class="nc" id="L315">            throw new RuntimeException(&quot;Clé invalide ou expirée.&quot;);</span>
+        }
+
+        // Encoder le nouveau mot de passe
+<span class="nc" id="L319">        user.setUserPassword(passwordEncoder.encode(newPassword));</span>
+
+        // Supprimer la clé après usage
+<span class="nc" id="L322">        user.setUserKey(null);</span>
+
+        // Sauvegarder
+<span class="nc" id="L325">        userRepository.save(user);</span>
+<span class="nc" id="L326">    }</span>
+
+    @Override
+    public void resendVerificationCode(String email) {
+<span class="nc" id="L330">        Users user = userRepository.findByUserEmail(email)</span>
+<span class="nc" id="L331">                .orElseThrow(UserNotFoundException::new);</span>
+<span class="nc" id="L332">        String newCode = generateSecureCode(6);</span>
+<span class="nc" id="L333">        user.setUserCode(newCode);</span>
+<span class="nc" id="L334">        user.setUserCodeDateExp(LocalDateTime.now().plusHours(2));</span>
+
+<span class="nc" id="L336">        userRepository.save(user);</span>
+<span class="nc" id="L337">        emailService.sendEmail(</span>
+<span class="nc" id="L338">                user.getUserEmail(),</span>
+                &quot;Code de vérification&quot;,
+                &quot;Votre nouveau code est : &quot; + newCode
+        );
+<span class="nc" id="L342">    }</span>
+
+
+    private boolean isAccountLocked(Users user) {
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        return user.getUserLockUntil() != null</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">                &amp;&amp; user.getUserLockUntil().isAfter(LocalDateTime.now());</span>
+    }
+
+    private void resetLoginAttempts(Users user) {
+<span class="nc" id="L351">        user.setUserFailedLoginAttempts(0);</span>
+<span class="nc" id="L352">        user.setUserLockUntil(null);</span>
+<span class="nc" id="L353">        userRepository.save(user);</span>
+<span class="nc" id="L354">    }</span>
+
+    private void incrementLoginAttempts(Users user, int maxAttempts, int lockMinutes) {
+<span class="nc" id="L357">        int attempts = user.getUserFailedLoginAttempts() + 1;</span>
+<span class="nc" id="L358">        user.setUserFailedLoginAttempts(attempts);</span>
+
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if (attempts &gt;= maxAttempts) {</span>
+<span class="nc" id="L361">            user.setUserLockUntil(LocalDateTime.now().plusMinutes(lockMinutes));</span>
+        }
+
+<span class="nc" id="L364">        userRepository.save(user);</span>
+<span class="nc" id="L365">    }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

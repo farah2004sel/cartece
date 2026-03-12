@@ -1,0 +1,59 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="ASUS (generated)" id="1773228918601-1">
+        <addColumn tableName="demande">
+            <column name="demande_cancel" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-2">
+        <addColumn tableName="demande">
+            <column name="demande_date_added" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-3">
+        <addColumn tableName="demande">
+            <column name="demande_date_edit" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-4">
+        <addColumn tableName="demande">
+            <column name="demande_focus" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-5">
+        <addColumn tableName="demande">
+            <column name="demande_parent_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-6">
+        <addColumn tableName="demande">
+            <column name="demande_published" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-7">
+        <addColumn tableName="demande">
+            <column name="demande_sort_order" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-8">
+        <dropColumn columnName="action_cancel" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-9">
+        <dropColumn columnName="action_date_added" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-10">
+        <dropColumn columnName="action_date_edit" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-11">
+        <dropColumn columnName="action_focus" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-12">
+        <dropColumn columnName="action_parent_id" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-13">
+        <dropColumn columnName="action_published" tableName="demande"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773228918601-14">
+        <dropColumn columnName="action_sort_order" tableName="demande"/>
+    </changeSet>
+</databaseChangeLog>

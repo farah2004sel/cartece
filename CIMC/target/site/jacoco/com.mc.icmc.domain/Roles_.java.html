@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Roles_.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.domain</a> &gt; <span class="el_source">Roles_.java</span></div><h1>Roles_.java</h1><pre class="source lang-java linenums">package com.mc.icmc.domain;
+
+import jakarta.annotation.Generated;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.ListAttribute;
+import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.StaticMetamodel;
+import java.time.LocalDate;
+
+@StaticMetamodel(Roles.class)
+@Generated(&quot;org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor&quot;)
+<span class="nc" id="L12">public abstract class Roles_ {</span>
+
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleDateEdit
+	 **/
+	public static volatile SingularAttribute&lt;Roles, LocalDate&gt; roleDateEdit;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleModuleActions
+	 **/
+	public static volatile ListAttribute&lt;Roles, RoleModuleAction&gt; roleModuleActions;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleCancel
+	 **/
+	public static volatile SingularAttribute&lt;Roles, Integer&gt; roleCancel;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleSortOrder
+	 **/
+	public static volatile SingularAttribute&lt;Roles, Integer&gt; roleSortOrder;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#rolePublished
+	 **/
+	public static volatile SingularAttribute&lt;Roles, Integer&gt; rolePublished;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleId
+	 **/
+	public static volatile SingularAttribute&lt;Roles, Long&gt; roleId;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleName
+	 **/
+	public static volatile SingularAttribute&lt;Roles, String&gt; roleName;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles
+	 **/
+	public static volatile EntityType&lt;Roles&gt; class_;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#parentId
+	 **/
+	public static volatile SingularAttribute&lt;Roles, Long&gt; parentId;
+	
+	/**
+	 * @see com.mc.icmc.domain.Roles#roleDateAdded
+	 **/
+	public static volatile SingularAttribute&lt;Roles, LocalDate&gt; roleDateAdded;
+
+	public static final String ROLE_DATE_EDIT = &quot;roleDateEdit&quot;;
+	public static final String ROLE_MODULE_ACTIONS = &quot;roleModuleActions&quot;;
+	public static final String ROLE_CANCEL = &quot;roleCancel&quot;;
+	public static final String ROLE_SORT_ORDER = &quot;roleSortOrder&quot;;
+	public static final String ROLE_PUBLISHED = &quot;rolePublished&quot;;
+	public static final String ROLE_ID = &quot;roleId&quot;;
+	public static final String ROLE_NAME = &quot;roleName&quot;;
+	public static final String PARENT_ID = &quot;parentId&quot;;
+	public static final String ROLE_DATE_ADDED = &quot;roleDateAdded&quot;;
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

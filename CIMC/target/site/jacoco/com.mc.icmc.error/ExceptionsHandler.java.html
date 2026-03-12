@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExceptionsHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.error</a> &gt; <span class="el_source">ExceptionsHandler.java</span></div><h1>ExceptionsHandler.java</h1><pre class="source lang-java linenums">package com.mc.icmc.error;
+
+
+import com.mc.icmc.error.exception.*;
+import com.mc.icmc.error.record.ErrorResponse;
+import com.mc.icmc.error.record.ExceptionWithErrorResponse;
+import com.mc.icmc.error.record.FieldError;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ExceptionsHandler is the class that handle all the exception from the application for witch we want to send an error response to the client.
+ *
+ * @author Fethi Benseddik
+ */
+@ControllerAdvice
+<span class="fc" id="L30">@Slf4j</span>
+<span class="fc" id="L31">public class ExceptionsHandler extends ResponseEntityExceptionHandler {</span>
+
+
+    /**
+     * Handle the MethodArgumentNotValidException to automatically send an error response to the client.
+     *
+     * @param ex      the exception MethodArgumentNotValidException
+     * @param headers the headers
+     * @param status  the status
+     * @param request the request
+     * @return the error response entity
+     * @author Fethi Benseddik
+     */
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request
+    ) {
+<span class="nc" id="L51">        log.error(&quot;Method argument not valid: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L52">        List&lt;FieldError&gt; errors = ex.getBindingResult().getFieldErrors().stream()</span>
+<span class="nc" id="L53">                .map(fieldError -&gt; new FieldError(</span>
+<span class="nc" id="L54">                        fieldError.getObjectName(),</span>
+<span class="nc" id="L55">                        fieldError.getField(),</span>
+<span class="nc" id="L56">                        fieldError.getDefaultMessage(),</span>
+<span class="nc" id="L57">                        fieldError.getCode()))</span>
+<span class="nc" id="L58">                .toList();</span>
+<span class="nc" id="L59">        return ResponseEntity.badRequest().body(errors);</span>
+    }
+
+    /**
+     * Handles exceptions that involve a custom error response.
+     * It logs an error with the name of the exception class and its message and returns an HTTP response with a 400 Bad Request status code and a response body containing the error details.
+     *
+     * @param ex The exception with a custom error response
+     * @return The HTTP response with a 400 Bad Request status code and a response body containing the error details
+     */
+    protected ResponseEntity&lt;ErrorResponse&gt; handleExceptionWithErrorResponse(ExceptionWithErrorResponse ex) {
+<span class="nc" id="L70">        log.error(&quot;{}: {}&quot;, ex.getClass().getSimpleName(), ex.getMessage());</span>
+<span class="nc" id="L71">        ErrorResponse errorResponse = new ErrorResponse(</span>
+<span class="nc" id="L72">                ex.getMessage(),</span>
+<span class="nc" id="L73">                ex.getCode(),</span>
+<span class="nc" id="L74">                ex.getHttpStatus().getReasonPhrase(),</span>
+<span class="nc" id="L75">                ex.getStatus(),</span>
+<span class="nc" id="L76">                ex.getUrl(),</span>
+<span class="nc" id="L77">                Instant.now());</span>
+
+        // Utiliser le httpStatus de l'exception pour le code de réponse
+<span class="nc" id="L80">        return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);</span>
+    }
+
+
+
+
+
+
+    @ExceptionHandler({
+            AccessDeniedException.class,
+            UnauthorizedException.class,
+            BadRequestException.class
+    })
+    public ResponseEntity&lt;Object&gt; handleCustomException(ExceptionWithErrorResponse ex) {
+<span class="nc" id="L94">        Map&lt;String, Object&gt; body = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L95">        body.put(&quot;status&quot;, &quot;error&quot;);</span>
+<span class="nc" id="L96">        body.put(&quot;code&quot;, ex.getCode());</span>
+<span class="nc" id="L97">        body.put(&quot;errors&quot;, List.of(Map.of(</span>
+<span class="nc" id="L98">                &quot;code&quot;, ex.getStatus(),</span>
+<span class="nc" id="L99">                &quot;description&quot;, ex.getMessage()</span>
+        )));
+<span class="nc" id="L101">        return ResponseEntity.status(ex.getStatus()).body(body);</span>
+
+    }
+
+
+    /**
+     * Handles the {@link ApiKeyNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(ApiKeyNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; handleApiKeyNotFoundException(ApiKeyNotFoundException ex) {
+<span class="nc" id="L114">        log.error(&quot;ApiKey not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L115">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link RoleNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(RoleNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; RoleNotFoundException(RoleNotFoundException ex) {
+<span class="nc" id="L126">        log.error(&quot;Role not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L127">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link RoleAlreadyExistsException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(RoleAlreadyExistsException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; handleRoleAlreadyExistsException(RoleAlreadyExistsException ex) {
+<span class="nc" id="L138">        log.error(&quot;Role already exists: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L139">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+
+    /**
+     * Handles the {@link TypeNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(TypeNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; ConcoursTypeNotFoundException(TypeNotFoundException ex) {
+<span class="nc" id="L151">        log.error(&quot;Type not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L152">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+
+
+    /**
+     * Handles the {@link ActionNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(ActionNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; ActionNotFoundException(ActionNotFoundException ex) {
+<span class="nc" id="L165">        log.error(&quot;Action not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L166">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link ActionAlreadyExistsException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(ActionAlreadyExistsException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; handleActionAlreadyExistsException(ActionAlreadyExistsException ex) {
+<span class="nc" id="L177">        log.error(&quot;Action already exists: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L178">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link LogUserNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(LogUserNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; LogUserNotFoundException(LogUserNotFoundException ex) {
+<span class="nc" id="L189">        log.error(&quot;LogUser not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L190">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link UserNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; UserNotFoundException(UserNotFoundException ex) {
+<span class="nc" id="L201">        log.error(&quot;User not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L202">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link ModuleNotFoundException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(ModuleNotFoundException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; ModuleNotFoundException(ModuleNotFoundException ex) {
+<span class="nc" id="L213">        log.error(&quot;Module not found: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L214">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+    /**
+     * Handles the {@link ModuleAlreadyExistsException} and returns an appropriate HTTP response.
+     *
+     * @param ex the exception
+     * @return the response entity with error details
+     */
+    @ExceptionHandler(ModuleAlreadyExistsException.class)
+    protected ResponseEntity&lt;ErrorResponse&gt; handleModuleAlreadyExistsException(ModuleAlreadyExistsException ex) {
+<span class="nc" id="L225">        log.error(&quot;Module already exists: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L226">        return handleExceptionWithErrorResponse(ex);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

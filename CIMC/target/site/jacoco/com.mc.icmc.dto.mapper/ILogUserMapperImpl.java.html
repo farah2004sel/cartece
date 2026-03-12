@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ILogUserMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.dto.mapper</a> &gt; <span class="el_source">ILogUserMapperImpl.java</span></div><h1>ILogUserMapperImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.dto.mapper;
+
+import com.mc.icmc.domain.Actions;
+import com.mc.icmc.domain.Log_User;
+import com.mc.icmc.domain.Modules;
+import com.mc.icmc.domain.Users;
+import com.mc.icmc.dto.request.LogUserRequest;
+import com.mc.icmc.dto.response.LogUserResponse;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-03-11T12:33:42+0100&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 18.0.2.1 (Oracle Corporation)&quot;
+)
+@Component
+<span class="fc" id="L20">public class ILogUserMapperImpl implements ILogUserMapper {</span>
+
+    @Override
+    public Log_User toEntity(LogUserRequest request) {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L25">            return null;</span>
+        }
+
+<span class="nc" id="L28">        Log_User log_User = new Log_User();</span>
+
+<span class="nc" id="L30">        log_User.setUser( logUserRequestToUsers( request ) );</span>
+<span class="nc" id="L31">        log_User.setModule( logUserRequestToModules( request ) );</span>
+<span class="nc" id="L32">        log_User.setAction( logUserRequestToActions( request ) );</span>
+<span class="nc" id="L33">        log_User.setLogUserTitle( request.getLogUserTitle() );</span>
+<span class="nc" id="L34">        log_User.setLogUserAgent( request.getLogUserAgent() );</span>
+<span class="nc" id="L35">        log_User.setLogUserAgentString( request.getLogUserAgentString() );</span>
+
+<span class="nc" id="L37">        return log_User;</span>
+    }
+
+    @Override
+    public LogUserResponse toResponse(Log_User logUser) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if ( logUser == null ) {</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+
+<span class="nc" id="L46">        Long userId = null;</span>
+<span class="nc" id="L47">        Long moduleId = null;</span>
+<span class="nc" id="L48">        Long actionId = null;</span>
+<span class="nc" id="L49">        Long logUserId = null;</span>
+<span class="nc" id="L50">        UUID logUserUuid = null;</span>
+<span class="nc" id="L51">        String logUserTitle = null;</span>
+<span class="nc" id="L52">        LocalDateTime logUserDate = null;</span>
+<span class="nc" id="L53">        String logUserIp = null;</span>
+<span class="nc" id="L54">        String macVendeur = null;</span>
+<span class="nc" id="L55">        String logUserAgent = null;</span>
+<span class="nc" id="L56">        String logUserAgentString = null;</span>
+
+<span class="nc" id="L58">        userId = logUserUserId( logUser );</span>
+<span class="nc" id="L59">        moduleId = logUserModuleModuleId( logUser );</span>
+<span class="nc" id="L60">        actionId = logUserActionActionId( logUser );</span>
+<span class="nc" id="L61">        logUserId = logUser.getLogUserId();</span>
+<span class="nc" id="L62">        logUserUuid = logUser.getLogUserUuid();</span>
+<span class="nc" id="L63">        logUserTitle = logUser.getLogUserTitle();</span>
+<span class="nc" id="L64">        logUserDate = logUser.getLogUserDate();</span>
+<span class="nc" id="L65">        logUserIp = logUser.getLogUserIp();</span>
+<span class="nc" id="L66">        macVendeur = logUser.getMacVendeur();</span>
+<span class="nc" id="L67">        logUserAgent = logUser.getLogUserAgent();</span>
+<span class="nc" id="L68">        logUserAgentString = logUser.getLogUserAgentString();</span>
+
+<span class="nc" id="L70">        LogUserResponse logUserResponse = new LogUserResponse( logUserId, logUserUuid, userId, moduleId, actionId, logUserTitle, logUserDate, logUserIp, macVendeur, logUserAgent, logUserAgentString );</span>
+
+<span class="nc" id="L72">        return logUserResponse;</span>
+    }
+
+    protected Users logUserRequestToUsers(LogUserRequest logUserRequest) {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if ( logUserRequest == null ) {</span>
+<span class="nc" id="L77">            return null;</span>
+        }
+
+<span class="nc" id="L80">        Users users = new Users();</span>
+
+<span class="nc" id="L82">        users.setId( logUserRequest.getUserId() );</span>
+
+<span class="nc" id="L84">        return users;</span>
+    }
+
+    protected Modules logUserRequestToModules(LogUserRequest logUserRequest) {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if ( logUserRequest == null ) {</span>
+<span class="nc" id="L89">            return null;</span>
+        }
+
+<span class="nc" id="L92">        Modules modules = new Modules();</span>
+
+<span class="nc" id="L94">        modules.setModuleId( logUserRequest.getModuleId() );</span>
+
+<span class="nc" id="L96">        return modules;</span>
+    }
+
+    protected Actions logUserRequestToActions(LogUserRequest logUserRequest) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if ( logUserRequest == null ) {</span>
+<span class="nc" id="L101">            return null;</span>
+        }
+
+<span class="nc" id="L104">        Actions actions = new Actions();</span>
+
+<span class="nc" id="L106">        actions.setActionId( logUserRequest.getActionId() );</span>
+
+<span class="nc" id="L108">        return actions;</span>
+    }
+
+    private Long logUserUserId(Log_User log_User) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if ( log_User == null ) {</span>
+<span class="nc" id="L113">            return null;</span>
+        }
+<span class="nc" id="L115">        Users user = log_User.getUser();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if ( user == null ) {</span>
+<span class="nc" id="L117">            return null;</span>
+        }
+<span class="nc" id="L119">        Long id = user.getId();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if ( id == null ) {</span>
+<span class="nc" id="L121">            return null;</span>
+        }
+<span class="nc" id="L123">        return id;</span>
+    }
+
+    private Long logUserModuleModuleId(Log_User log_User) {
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if ( log_User == null ) {</span>
+<span class="nc" id="L128">            return null;</span>
+        }
+<span class="nc" id="L130">        Modules module = log_User.getModule();</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if ( module == null ) {</span>
+<span class="nc" id="L132">            return null;</span>
+        }
+<span class="nc" id="L134">        Long moduleId = module.getModuleId();</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if ( moduleId == null ) {</span>
+<span class="nc" id="L136">            return null;</span>
+        }
+<span class="nc" id="L138">        return moduleId;</span>
+    }
+
+    private Long logUserActionActionId(Log_User log_User) {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if ( log_User == null ) {</span>
+<span class="nc" id="L143">            return null;</span>
+        }
+<span class="nc" id="L145">        Actions action = log_User.getAction();</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if ( action == null ) {</span>
+<span class="nc" id="L147">            return null;</span>
+        }
+<span class="nc" id="L149">        Long actionId = action.getActionId();</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if ( actionId == null ) {</span>
+<span class="nc" id="L151">            return null;</span>
+        }
+<span class="nc" id="L153">        return actionId;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

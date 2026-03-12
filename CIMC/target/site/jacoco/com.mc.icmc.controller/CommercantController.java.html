@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommercantController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.controller</a> &gt; <span class="el_source">CommercantController.java</span></div><h1>CommercantController.java</h1><pre class="source lang-java linenums">package com.mc.icmc.controller;
+
+import com.mc.icmc.domain.Commercant;
+import com.mc.icmc.dto.response.CommercantResponse;
+import com.mc.icmc.service.ICommercantService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/v1/commercants&quot;)
+@RequiredArgsConstructor
+public class CommercantController {
+
+    private final ICommercantService commercantService;
+
+    @PostMapping
+    public Commercant create(@RequestBody Commercant commercant) {
+<span class="nc" id="L20">        return commercantService.save(commercant);</span>
+    }
+
+    @GetMapping
+    public List&lt;CommercantResponse&gt; getAll() {
+<span class="nc" id="L25">        return commercantService.findAllResponse();</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public Commercant getById(@PathVariable Long id) {
+<span class="nc" id="L30">        return commercantService.findById(id);</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public void delete(@PathVariable Long id) {
+<span class="nc" id="L35">        commercantService.delete(id);</span>
+<span class="nc" id="L36">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

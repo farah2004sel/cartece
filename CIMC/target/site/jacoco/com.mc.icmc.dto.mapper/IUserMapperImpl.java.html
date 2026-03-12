@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IUserMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">icmc</a> &gt; <a href="index.source.html" class="el_package">com.mc.icmc.dto.mapper</a> &gt; <span class="el_source">IUserMapperImpl.java</span></div><h1>IUserMapperImpl.java</h1><pre class="source lang-java linenums">package com.mc.icmc.dto.mapper;
+
+import com.mc.icmc.domain.Users;
+import com.mc.icmc.dto.response.RolesResponse;
+import com.mc.icmc.dto.response.UserResponse;
+import java.time.LocalDateTime;
+import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-03-11T12:33:42+0100&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 18.0.2.1 (Oracle Corporation)&quot;
+)
+@Component
+<span class="fc" id="L17">public class IUserMapperImpl implements IUserMapper {</span>
+
+    @Autowired
+    private IRolesMapper iRolesMapper;
+
+    @Override
+    public UserResponse toResponse(Users users) {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ( users == null ) {</span>
+<span class="nc" id="L25">            return null;</span>
+        }
+
+<span class="nc" id="L28">        RolesResponse role = null;</span>
+<span class="nc" id="L29">        Long id = null;</span>
+<span class="nc" id="L30">        String userName = null;</span>
+<span class="nc" id="L31">        String userEmail = null;</span>
+<span class="nc" id="L32">        String userFirstName = null;</span>
+<span class="nc" id="L33">        String userLastName = null;</span>
+<span class="nc" id="L34">        String userPhone = null;</span>
+<span class="nc" id="L35">        String userKey = null;</span>
+<span class="nc" id="L36">        String userCode = null;</span>
+<span class="nc" id="L37">        LocalDateTime userConfirmedAt = null;</span>
+<span class="nc" id="L38">        LocalDateTime userDateConnect = null;</span>
+
+<span class="nc" id="L40">        role = iRolesMapper.toResponse( users.getRole() );</span>
+<span class="nc" id="L41">        id = users.getId();</span>
+<span class="nc" id="L42">        userName = users.getUserName();</span>
+<span class="nc" id="L43">        userEmail = users.getUserEmail();</span>
+<span class="nc" id="L44">        userFirstName = users.getUserFirstName();</span>
+<span class="nc" id="L45">        userLastName = users.getUserLastName();</span>
+<span class="nc" id="L46">        userPhone = users.getUserPhone();</span>
+<span class="nc" id="L47">        userKey = users.getUserKey();</span>
+<span class="nc" id="L48">        userCode = users.getUserCode();</span>
+<span class="nc" id="L49">        userConfirmedAt = users.getUserConfirmedAt();</span>
+<span class="nc" id="L50">        userDateConnect = users.getUserDateConnect();</span>
+
+<span class="nc" id="L52">        UserResponse userResponse = new UserResponse( id, userName, userEmail, userFirstName, userLastName, userPhone, userKey, userCode, userConfirmedAt, userDateConnect, role );</span>
+
+<span class="nc" id="L54">        return userResponse;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

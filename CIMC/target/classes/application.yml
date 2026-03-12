@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: stage
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
