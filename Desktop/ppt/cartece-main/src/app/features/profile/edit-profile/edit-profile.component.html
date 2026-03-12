@@ -1,0 +1,132 @@
+<div class="auth-container d-flex align-items-center justify-content-center min-vh-100 bg-light py-5">
+  <div class="profile-card shadow-lg p-5 bg-white rounded-4 border-top border-5 border-danger">
+    <div class="text-center mb-5">
+      <div class="icon-circle bg-light-danger text-danger mx-auto mb-3">
+        <i class='bx bx-id-card fs-1'></i>
+      </div>
+      <h2 class="fw-bold">Profil Professionnel</h2>
+      <p class="text-muted small">Ces informations seront enregistrées une seule fois et réutilisées pour vos futures demandes.</p>
+    </div>
+
+    <form #profileForm="ngForm" (ngSubmit)="save(profileForm)">
+      <!-- SECTION IDENTITÉ -->
+      <div class="section-title mb-4">
+        <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2">Identité</h5>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-12">
+          <label class="form-label small fw-bold text-muted">
+            {{ profileData.type === 'physique' ? 'Nom et prénom' : 'Dénomination' }}
+          </label>
+          <input type="text" class="form-control bg-light border-0 py-3"
+                 placeholder="Entrez le nom complet"
+                 [(ngModel)]="profileData.fullName" name="fullName" required #fullName="ngModel">
+          <div class="text-danger small mt-1" *ngIf="fullName.invalid && fullName.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted">
+            {{ profileData.type === 'physique' ? 'Date de naissance' : 'Date de constitution' }}
+          </label>
+          <input type="date" class="form-control bg-light border-0 py-3"
+                 [(ngModel)]="profileData.birthDate" name="birthDate" required #birthDate="ngModel">
+          <div class="text-danger small mt-1" *ngIf="birthDate.invalid && birthDate.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted">
+            {{ profileData.type === 'physique' ? 'Lieu de naissance' : 'Lieu de constitution' }}
+          </label>
+          <input type="text" class="form-control bg-light border-0 py-3"
+                 placeholder="Ville, Pays"
+                 [(ngModel)]="profileData.birthPlace" name="birthPlace" required #birthPlace="ngModel">
+          <div class="text-danger small mt-1" *ngIf="birthPlace.invalid && birthPlace.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted">Nationalité</label>
+          <input type="text" class="form-control bg-light border-0 py-3"
+                 placeholder="Ex: Italienne"
+                 [(ngModel)]="profileData.nationality" name="nationality" required #nationality="ngModel">
+          <div class="text-danger small mt-1" *ngIf="nationality.invalid && nationality.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted">Date de résidence en Tunisie</label>
+          <input type="date" class="form-control bg-light border-0 py-3"
+                 [(ngModel)]="profileData.residenceDate" name="residenceDate" required #residenceDate="ngModel">
+          <div class="text-danger small mt-1" *ngIf="residenceDate.invalid && residenceDate.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label small fw-bold text-muted">
+            {{ profileData.type === 'physique' ? 'Domicile' : 'Siège social' }}
+          </label>
+          <textarea class="form-control bg-light border-0" rows="3"
+                    placeholder="Adresse complète..."
+                    [(ngModel)]="profileData.address" name="address" required #address="ngModel"></textarea>
+          <div class="text-danger small mt-1" *ngIf="address.invalid && address.touched">
+            Ce champ est obligatoire
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION PERSONNE MORALE -->
+      <div *ngIf="profileData.type === 'morale'">
+        <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2 mb-3">Informations Société</h5>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label small fw-bold text-muted">Forme juridique</label>
+            <select class="form-select bg-light border-0 py-3"
+                    [(ngModel)]="profileData.legalForm" name="legalForm" required #legalForm="ngModel">
+              <option disabled selected value="">Choisir la forme...</option>
+              <option value="SARL">SARL</option>
+              <option value="SUARL">SUARL</option>
+              <option value="SA">SA</option>
+            </select>
+            <div class="text-danger small mt-1" *ngIf="legalForm.invalid && legalForm.touched">
+              Ce champ est obligatoire
+            </div>
+          </div>
+        </div>
+
+        <h5 class="fw-bold text-dark border-start border-danger border-4 ps-2 mb-3">Responsable Légal</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Nom & Prénom</label>
+            <input type="text" class="form-control bg-light border-0 py-3"
+                   [(ngModel)]="profileData.repName" name="repName" required #repName="ngModel">
+            <div class="text-danger small mt-1" *ngIf="repName.invalid && repName.touched">
+              Ce champ est obligatoire
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Nationalité</label>
+            <input type="text" class="form-control bg-light border-0 py-3"
+                   [(ngModel)]="profileData.repNationality" name="repNationality" required #repNationality="ngModel">
+            <div class="text-danger small mt-1" *ngIf="repNationality.invalid && repNationality.touched">
+              Ce champ est obligatoire
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-danger w-100 py-3 fw-bold mt-4" [disabled]="loading">
+        <span *ngIf="!loading">Finaliser mon Profil</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="auth-wrapper">
+  <div class="hero-overlay"></div>
+
+  <div class="auth-card animate__animated animate__fadeIn">
+    <div class="auth-header text-center mb-4">
+      <h2>Vérification Email<span class="dot">.</span></h2>
+      <p class="text-muted">Entrez votre email et le code reçu</p>
+    </div>
+    <form [formGroup]="formEmail" (ngSubmit)="onSubmit()">
+
+      <!-- EMAIL -->
+      <div class="form-input-group mb-3">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="exemple@mail.com" />
+        <div *ngIf="formEmail.get('email')?.touched && formEmail.get('email')?.invalid" class="error">
+          Email requis et doit être valide
+        </div>
+      </div>
+    
+      <!-- CODE -->
+      <div class="form-input-group mb-3">
+        <label>Code</label>
+        <input type="text" formControlName="code" placeholder="Entrez le code" />
+        <div *ngIf="formEmail.get('code')?.touched && formEmail.get('code')?.invalid" class="error">
+          Code requis
+        </div>
+      </div>
+    
+      <!-- ERROR MESSAGE -->
+      <div *ngIf="errorMessage" class="error mb-3">
+        {{ errorMessage }}
+      </div>
+    
+      <!-- BUTTON GROUP -->
+      <div class="button-group">
+        <button type="submit" [disabled]="loading">
+          {{ loading ? 'Vérification...' : 'Vérifier' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="resendCode()" [disabled]="loading || codeExpired">
+          Renvoyer le code
+        </button>
+      </div>
+    
+      <!-- TIMER -->
+      <div class="resend-container">
+        <span class="timer" [ngClass]="{'warning': timeLeft <= 60}" *ngIf="!codeExpired">
+          ⏱ {{ displayTime }}
+        </span>
+        <span *ngIf="codeExpired" class="expired">
+          Code expiré
+        </span>
+      </div>
+    
+      <!-- FOOTER -->
+      <div class="auth-footer mt-4">
+        <p>Retour à 
+          <a routerLink="/auth/login" class="fw-bold hover-underline">Connexion</a>
+        </p>
+      </div>
+    
+    </form>
+  </div>
+</div>
