@@ -1,0 +1,226 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="ASUS (generated)" id="1773428520839-1">
+        <createTable tableName="actions">
+            <column autoIncrement="true" name="action_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="actionsPK"/>
+            </column>
+            <column name="action_cancel" type="INTEGER"/>
+            <column name="action_date_added" type="date"/>
+            <column name="action_date_edit" type="date"/>
+            <column name="action_focus" type="INTEGER"/>
+            <column name="action_parent_id" type="BIGINT"/>
+            <column name="action_published" type="INTEGER"/>
+            <column name="action_sort_order" type="INTEGER"/>
+            <column name="action_title" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-2">
+        <createTable tableName="commercant">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="commercantPK"/>
+            </column>
+            <column name="nationalite_id" type="BIGINT"/>
+            <column name="societe" type="VARCHAR(150)"/>
+            <column name="type_personne" type="VARCHAR(50)"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-3">
+        <createTable tableName="log_user">
+            <column autoIncrement="true" name="log_user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="log_userPK"/>
+            </column>
+            <column name="focus" type="INTEGER"/>
+            <column name="log_user_agent" type="VARCHAR(255)"/>
+            <column name="log_user_agent_string" type="TEXT"/>
+            <column name="log_user_date" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_user_ip" type="VARCHAR(50)"/>
+            <column name="log_user_title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_user_uuid" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mac_vendeur" type="VARCHAR(100)"/>
+            <column name="action_id" type="BIGINT"/>
+            <column name="module_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-4">
+        <createTable tableName="modules">
+            <column autoIncrement="true" name="module_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="modulesPK"/>
+            </column>
+            <column name="module_cancel" type="INTEGER"/>
+            <column name="module_date_added" type="date"/>
+            <column name="module_date_edit" type="date"/>
+            <column name="module_focus" type="INTEGER"/>
+            <column name="module_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="module_parent_id" type="BIGINT"/>
+            <column name="module_published" type="INTEGER"/>
+            <column name="module_sort_order" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-5">
+        <createTable tableName="nationalite">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nationalitePK"/>
+            </column>
+            <column name="code" type="VARCHAR(5)"/>
+            <column name="nom" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-6">
+        <createTable tableName="role_module_actions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_module_actionsPK"/>
+            </column>
+            <column name="action_id" type="BIGINT"/>
+            <column name="module_id" type="BIGINT"/>
+            <column name="role_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-7">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="rolesPK"/>
+            </column>
+            <column name="parent_id" type="BIGINT"/>
+            <column name="role_cancel" type="INTEGER"/>
+            <column name="role_date_added" type="date"/>
+            <column name="role_date_edit" type="date"/>
+            <column name="role_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_published" type="INTEGER"/>
+            <column name="role_sort_order" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-8">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="usersPK"/>
+            </column>
+            <column name="user_cancel" type="INTEGER"/>
+            <column name="user_code" type="VARCHAR(100)"/>
+            <column name="user_code_date_exp" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="user_confirmed_at" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="user_date_added" type="date"/>
+            <column name="user_date_connect" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="user_date_edit" type="date"/>
+            <column name="user_email" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_failed_login_attempts" type="INTEGER"/>
+            <column name="user_first_name" type="VARCHAR(100)"/>
+            <column name="user_focus" type="INTEGER"/>
+            <column name="user_key" type="VARCHAR(100)"/>
+            <column name="user_last_name" type="VARCHAR(100)"/>
+            <column name="user_lock_until" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="user_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_parent_id" type="BIGINT"/>
+            <column name="user_password" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_phone" type="VARCHAR(20)"/>
+            <column name="user_published" type="INTEGER"/>
+            <column name="user_sort_order" type="INTEGER"/>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-9">
+        <addUniqueConstraint columnNames="user_id" constraintName="UC_COMMERCANTUSER_ID_COL" tableName="commercant"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-10">
+        <addUniqueConstraint columnNames="log_user_uuid" constraintName="UC_LOG_USERLOG_USER_UUID_COL" tableName="log_user"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-11">
+        <addUniqueConstraint columnNames="code" constraintName="UC_NATIONALITECODE_COL" tableName="nationalite"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-12">
+        <addUniqueConstraint columnNames="nom" constraintName="UC_NATIONALITENOM_COL" tableName="nationalite"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-13">
+        <addUniqueConstraint columnNames="user_email" constraintName="UC_USERSUSER_EMAIL_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-14">
+        <addUniqueConstraint columnNames="user_name" constraintName="UC_USERSUSER_NAME_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-15">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="commercant" constraintName="FK3vrufv0pklbaelutsccmsej1y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-16">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="log_user" constraintName="FK4p5eu2ybjr33ed7y4jr67jmf4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-17">
+        <addForeignKeyConstraint baseColumnNames="module_id" baseTableName="role_module_actions" constraintName="FK4uj53nr5yg52dlaaecw8r48gl" deferrable="false" initiallyDeferred="false" referencedColumnNames="module_id" referencedTableName="modules" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-18">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="role_module_actions" constraintName="FK5q75w4d1kbpuvei0ek2rabyve" deferrable="false" initiallyDeferred="false" referencedColumnNames="role_id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-19">
+        <addForeignKeyConstraint baseColumnNames="module_id" baseTableName="log_user" constraintName="FKbxqa6qh0cgmof1xfo5xe4l04y" deferrable="false" initiallyDeferred="false" referencedColumnNames="module_id" referencedTableName="modules" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-20">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="log_user" constraintName="FKmr571mnq6mvtdhseuo1yqd17b" deferrable="false" initiallyDeferred="false" referencedColumnNames="action_id" referencedTableName="actions" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-21">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="role_module_actions" constraintName="FKnwxbt7hoimdy16gpb0lu1f6ak" deferrable="false" initiallyDeferred="false" referencedColumnNames="action_id" referencedTableName="actions" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773428520839-22">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="users" constraintName="FKp56c1712k691lhsyewcssf40f" deferrable="false" initiallyDeferred="false" referencedColumnNames="role_id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-1">
+        <addColumn tableName="commercant">
+            <column name="address" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-2">
+        <addColumn tableName="commercant">
+            <column name="birth_date" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-3">
+        <addColumn tableName="commercant">
+            <column name="birth_place" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-4">
+        <addColumn tableName="commercant">
+            <column name="legal_form" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-5">
+        <addColumn tableName="commercant">
+            <column name="rep_name" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-6">
+        <addColumn tableName="commercant">
+            <column name="rep_nationality" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ASUS (generated)" id="1773530282937-7">
+        <addColumn tableName="commercant">
+            <column name="residence_date" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

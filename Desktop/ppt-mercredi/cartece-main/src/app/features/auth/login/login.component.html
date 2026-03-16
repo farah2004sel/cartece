@@ -1,0 +1,41 @@
+<div class="auth-wrapper auth-hero-wrapper">
+   <div class="hero-overlay"></div>
+
+   <div class="auth-card glass-card">
+     <div class="auth-header">
+      <h2 class="text-brand">Connexion<span class="dot">.</span></h2>
+      <p>Accédez à votre espace commerçant</p>
+    </div>
+
+     <form [formGroup]="FormLogin">
+      <div class="form-input-group">
+        <label>Email</label>
+        <input type="text" name="usernameOrEmail" formControlName="usernameOrEmail" />
+      </div>
+
+      <div class="form-input-group">
+        <label>Mot de passe</label>
+        <input type="password" name="password" formControlName="password" />
+      </div>
+
+       <div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+        {{ errorMessage }}
+      </div><br>
+
+       <button type="button" class="btn-brand" (click)="login()" [disabled]="loading">
+        <span *ngIf="!loading">Se connecter</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </form>
+
+     <div class="text-end mt-2">
+      <a routerLink="/auth/forget-password" class="forgot-link">
+        Mot de passe oublié ?
+      </a>
+    </div>
+
+     <div class="auth-footer">
+      <p>Pas encore de compte ? <a routerLink="/auth/register">S'inscrire</a></p>
+    </div>
+  </div>
+</div>
